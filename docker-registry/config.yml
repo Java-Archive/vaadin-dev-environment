@@ -1,0 +1,15 @@
+# This is the registry config file
+# Config reference https://docs.docker.com/registry/configuration/ - see this if you want https
+
+version: 0.1
+
+# you might want to drop log level to just info once things are working 
+log:
+    level: debug
+proxy:
+    remoteurl: https://registry-1.docker.io
+storage:
+    filesystem:
+        rootdirectory: /var/lib/registry
+http:
+    addr: 0.0.0.0:5000

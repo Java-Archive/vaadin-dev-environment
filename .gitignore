@@ -1,0 +1,7 @@
+# Created by .ignore support plugin (hsz.mobi)
+.idea
+vaadin-dev-environment.iml
+
+gogs/data
+droneio/drone
+

@@ -1,0 +1,103 @@
+version: '2'
+
+services:
+
+  nexus-server:
+    container_name: nexus-server
+    hostname: nexus-server
+    image: sonatype/nexus3:latest
+    ports:
+      - 8081:8081
+      - 8082:8082
+      - 8083:8083
+    restart: always
+
+  git-server:
+    container_name: git-server
+    hostname: git-server
+    image: gogs/gogs:latest
+    ports:
+      - 1022:22
+      - 3000:3000
+    volumes:
+      - $PWD/gogs/data:/data
+
+  selenoid-server:
+    container_name: selenoid-server
+    hostname: selenoid-server
+    image: aerokube/selenoid
+    network_mode: bridge
+    ports:
+      - 4444:4444
+    volumes:
+      - $PWD/selenoid/browsers.json:/etc/selenoid/browsers.json
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  selenoid-ui:
+    container_name: selenoid-ui
+    hostname: selenoid-ui
+    image: aerokube/selenoid-ui
+    network_mode: bridge
+    ports:
+      - 8080:8080
+    depends_on:
+      - selenoid-server
+    links:
+      - selenoid-server
+    command: [--selenoid-uri, "http://${SELENOID_DOCKER_EXTERNAL_IP}:4444"]
+
+  drone-server:
+    container_name: drone-server
+    hostname: drone-server
+    image: drone/drone:0.8
+    ports:
+      - 8000:8000
+      - 9000:9000
+    volumes:
+      - ./droneio/drone:/var/lib/drone/
+    restart: always
+    depends_on:
+      - nexus-server
+      - git-server
+    links:
+      - nexus-server
+      - git-server
+    environment:
+      - DRONE_HOST=http://${DRONE_DOCKER_EXTERNAL_IP}:8000
+      - DRONE_OPEN=true
+      - DRONE_SECRET=ok
+      - DRONE_PLUGIN_PULL=true
+      - DRONE_CACHE_TTY=1m
+      - DRONE_DATABASE_DRIVER=sqlite3
+      - DRONE_GOGS=true
+      - DRONE_GOGS_URL=http://git-server:3000
+      - DRONE_GOGS_SKIP_VERIFY=false
+      - DRONE_GOGS_PRIVATE_MODE=true
+
+  drone-agent:
+    image: drone/agent:0.8
+    restart: always
+    depends_on:
+      - drone-server
+    links:
+      - nexus-server
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - DRONE_SERVER=drone-server:9000
+      - DRONE_SECRET=ok
+
+  drone-cli:
+    build: droneio-cli/
+    container_name: drone-cli
+    hostname: drone-cli
+    restart: always
+    depends_on:
+      - drone-server
+    links:
+      - drone-server
+    environment:
+      - DRONE_SERVER=http://drone-server:8000
+      - DRONE_TOKEN=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZXh0Ijoic3ZlbiIsInR5cGUiOiJ1c2VyIn0.SIJEZ6dgbaLMWCSblCwBd7fA9d6dw6kC0H8P3K1P7nc
+    stdin_open: true
+    tty: true

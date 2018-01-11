@@ -1,0 +1,17 @@
+version: '2'
+
+# I'm using port 55000 as 5000 is used by the NAS web UI
+# Notice that a config.yml file is mapped into the container, save that next to this docker-compose.yml
+services:
+    hub-mirror:
+        image: registry:2
+        restart: always
+        ports:
+            - 55000:5000
+        volumes:
+            - ./config.yml:/etc/docker/registry/config.yml
+            - hub-mirror:/var/lib/registry
+
+# I'm using a named volume to persist the registry cache independent of the container lifespan
+volumes:
+    hub-mirror:
