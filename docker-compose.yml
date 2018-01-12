@@ -31,8 +31,8 @@ services:
       - 4444:4444
     volumes:
       - $PWD/selenoid/browsers.json:/etc/selenoid/browsers.json
+      - $PWD/selenoid/video/:/opt/selenoid/video/
       - /var/run/docker.sock:/var/run/docker.sock
-
   selenoid-ui:
     container_name: selenoid-ui
     hostname: selenoid-ui

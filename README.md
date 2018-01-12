@@ -210,8 +210,15 @@ This should be pasted into the **.env** file. The Token could be found at:
 **Menue -> Token -> Example CLI Usage**
 
 ### Selenoid
+Selenoid is a replacement for the traditional Selenium Implementation. It is written in Go
+and available as Docker IMage as well as Selenium. In Comparison to Selenium, the 
+supported Browsers are Firefox, Google Chrome and Opera. Additionally, the management of the 
+Browser Images are very easy if you are using the manager image that is available to create the config file
+for the active browsers for the current cluster. **browsers.json**
 
 #### create the browsers.json
+The JSON file **browsers.json** will configure the active and available browser types and versions
+for this cluster. To create a version you can use the following command.
 
 ````bash
 docker run --rm \
@@ -224,7 +231,16 @@ selenoid configure \
 --last-versions 4
 ````
 
-To reconfigure the browsers.json, delete the file in the folder
-sel
+This command will start downloading the latest four available versions 
+of the declared browsers. The corresponding config file **browsers.json** 
+will be written to the mounted folder **selenoid**
+
+To reconfigure the **browsers.json**, delete the file in the folder
+**selenoid/** and re-create the selenoid based images/containers.
+using docker-compose.
+
+#### videos
+The folder **selenoid/video** is mounted inside the Docker Container
+that is used for the Selenoid Hub.
 
 
