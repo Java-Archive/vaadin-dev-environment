@@ -1,4 +1,4 @@
-version: '2'
+version: '3.4'
 
 services:
 
@@ -49,7 +49,7 @@ services:
   drone-server:
     container_name: drone-server
     hostname: drone-server
-    image: drone/drone:0.8
+    image: drone/drone:0.8.1
     ports:
       - 8000:8000
       - 9000:9000
@@ -57,10 +57,9 @@ services:
       - ./droneio/drone:/var/lib/drone/
     restart: always
     depends_on:
-      - nexus-server
       - git-server
-    links:
       - nexus-server
+    links:
       - git-server
     environment:
       - DRONE_HOST=http://${DRONE_DOCKER_EXTERNAL_IP}:8000
@@ -75,12 +74,14 @@ services:
       - DRONE_GOGS_PRIVATE_MODE=true
 
   drone-agent:
-    image: drone/agent:0.8
+    image: drone/agent:0.8.1
+    container_name: drone-agent
+    hostname: drone-agent
     restart: always
     depends_on:
       - drone-server
     links:
-      - nexus-server
+      - drone-server
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
@@ -98,6 +99,6 @@ services:
       - drone-server
     environment:
       - DRONE_SERVER=http://drone-server:8000
-      - DRONE_TOKEN=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZXh0Ijoic3ZlbiIsInR5cGUiOiJ1c2VyIn0.SIJEZ6dgbaLMWCSblCwBd7fA9d6dw6kC0H8P3K1P7nc
+      - DRONE_TOKEN=${DRONE_DOCKER_SEC_TOKEN}
     stdin_open: true
     tty: true

@@ -21,6 +21,7 @@ The components so far are:
 ### Docker
 You have to install Docker on all machines you want to be involved in this 
 environment. Here I will describe a scenario that is based on two machines.
+If you don´t want to use a Docker Registry as a cache, all is running on one machine.
 
 * machine 1
     * name : docker host 1
@@ -69,7 +70,7 @@ dependencies to build your project. For example, if you are using
 maven, this will lead to a long list of jar-Files that are loaded
 from maven - central and other repositories.
 To increase speed, I recommend to use a 
-locsl available cache, that can be used for all Docker Containers, as
+local available cache, that can be used for all Docker Containers, as
 well as for other Developer machines.
 
 Here I will show you, how you can use this in combination with 
@@ -92,7 +93,7 @@ called: **nexus-server**
 ```
 
 Additionally the consumer of this repo needs a section called
-**mirrors** inside the ***settings.xml***.
+**mirrors** inside his used ***settings.xml***.
 
 ```xml
     <mirror>
@@ -104,7 +105,7 @@ Additionally the consumer of this repo needs a section called
 ```
 
 The URL here, is based on the NameService resolution that can be used from docker-compose.
-Until now, the storage of the repository manager nexus is transient between restarts.
+Until now, the storage of the repository manager (nexus) is transient between restarts.
 
 ### GOGS - the local github
 With Gogs there is a local git - Server, that will be used for the 
@@ -114,7 +115,7 @@ is the 100 percent local managed solution, to be independent
 as much as possible from the outer internet. 
 
 The git server needs some configuration.
-After the first start , you have to go to the address DOCKER_HOST_IP:3000.
+After the first start, you have to go to the address DOCKER_HOST_IP:3000.
 You will get a first config screen. Select as database **SQLite3** and scroll down the page. 
 
 
@@ -124,4 +125,106 @@ At the bottom you will have to fill out the details for the admin user you want 
 The username **admin** is reserved and could not be chosen.
 
 ![_images/git-server/git-server_002.png](_images/git-server/git-server_002.png)
+
+Now you have the possibility to clone git repos into this Gogs instance.
+All repositories you want to use together with the CI should be here.
+
+### DroneCI
+There are so many CI-Tools available, and most of them are bigger as you need.
+But, for a lot of projects you can use the simple DroneCI.
+DroneCI is split up in three parts. Number one is the CI-Server, 
+that manages all CI-Agents and will be connected from the CI-CLI.
+In this example we are not using Kubernetes or Docker Swarm. So all CI-Agents are 
+running at the same physical machine.
+
+````dockerfile
+  drone-server:
+    container_name: drone-server
+    hostname: drone-server
+    image: drone/drone:0.8
+    ports:
+      - 8000:8000
+      - 9000:9000
+    volumes:
+      - ./droneio/drone:/var/lib/drone/
+    restart: always
+    depends_on:
+      - nexus-server
+      - git-server
+    links:
+      - nexus-server
+      - git-server
+    environment:
+      - DRONE_HOST=http://${DRONE_DOCKER_EXTERNAL_IP}:8000
+      - DRONE_OPEN=true
+      - DRONE_SECRET=ok
+      - DRONE_PLUGIN_PULL=true
+      - DRONE_CACHE_TTY=1m
+      - DRONE_DATABASE_DRIVER=sqlite3
+      - DRONE_GOGS=true
+      - DRONE_GOGS_URL=http://git-server:3000
+      - DRONE_GOGS_SKIP_VERIFY=false
+      - DRONE_GOGS_PRIVATE_MODE=true
+````
+
+Part number two is the group of CI-Agents. The are responsible to manage the 
+build itself. This means, to create the Docker Container that is used to proceed the defined pipeline.
+
+````dockerfile
+  drone-agent:
+    image: drone/agent:0.8
+    restart: always
+    depends_on:
+      - drone-server
+    links:
+      - nexus-server
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - DRONE_SERVER=drone-server:9000
+      - DRONE_SECRET=ok
+````
+
+Part number three is the CI-CLI. Here you can get a few information's about the status of this system
+and builds can be trigged again and so on.
+
+````dockerfile
+  drone-cli:
+    build: droneio-cli/
+    container_name: drone-cli
+    hostname: drone-cli
+    restart: always
+    depends_on:
+      - drone-server
+    links:
+      - drone-server
+    environment:
+      - DRONE_SERVER=http://drone-server:8000
+      - DRONE_TOKEN=${DRONE_DOCKER_SEC_TOKEN}
+    stdin_open: true
+    tty: true
+````
+
+There is only thing that we have to define after the first start of the DroneCI Server is the Security Token.
+This should be pasted into the **.env** file. The Token could be found at:
+**Menue -> Token -> Example CLI Usage**
+
+### Selenoid
+
+#### create the browsers.json
+
+````bash
+docker run --rm \
+-v /var/run/docker.sock:/var/run/docker.sock \
+-v `pwd`/selenoid/:/root/.aerokube/selenoid/ \
+aerokube/cm:latest \
+selenoid configure \
+--tmpfs 128 \
+--browsers chrome,firefox,opera,phantomjs \
+--last-versions 4
+````
+
+To reconfigure the browsers.json, delete the file in the folder
+sel
+
 
