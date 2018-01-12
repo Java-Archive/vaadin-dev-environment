@@ -211,7 +211,7 @@ This should be pasted into the **.env** file. The Token could be found at:
 
 ### Selenoid
 Selenoid is a replacement for the traditional Selenium Implementation. It is written in Go
-and available as Docker IMage as well as Selenium. In Comparison to Selenium, the 
+and available as Docker Image as well as Selenium. In Comparison to Selenium, the 
 supported Browsers are Firefox, Google Chrome and Opera. Additionally, the management of the 
 Browser Images are very easy if you are using the manager image that is available to create the config file
 for the active browsers for the current cluster. **browsers.json**
