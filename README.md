@@ -13,8 +13,10 @@ based on docker-compose.
 
 ## Components
 The components so far are:
- * Nexus:       [http://localhost:8081](http://localhost:8081) admin/admin123
- * Gogs:        [http://localhost:3000](http://localhost:3000) what you defined
+ * DNS Server 
+ * Portainer    [http://localhost:9090](http://localhost:9090) create new user
+ * Nexus:       [http://localhost:8081](http://localhost:8081) default: admin/admin123
+ * Gitea:       [http://localhost:3000](http://localhost:3000) what you defined
  * DroneCI:     [http://localhost:8000](http://localhost:8000) user account from gogs
  * Selenoid UI: [http://localhost:8088](http://localhost:8080) no account
 
@@ -36,13 +38,19 @@ Both machines are a Mac Book Pro, with 16GB RAM. Less hardware should fit,
 depending on the workload you are expecting. 
 This is my personal, mobile developer and workshop environment.
 
+On both machines the Docker-Network is configured as **192.168.65.0**
+
 
 ### SOCAT Image
 **TODO**
 
 ### Portainer - The Docker UI
-**TODO**
+With Portainer, you will get a nice and clear UI to manage your Docker environment.
+During the firat login , you will be able to define the admin user.
+Here in my example I am using username: **admin** with the super-secure password **12345678**
 
+Portainer will give you a lot of information about the docker - host, the images, containers and so on.
+Sure, you can get all information's via terminal, but Portainer is just nicer ;-)
 
 ### Docker Registry
 The Docker Registry is used as a local Docker-Image cache. This should be on 
@@ -63,6 +71,14 @@ Mirror.
 
 Make sure that you are using the external IP from the Docker Host.
 In my case it is a **192.168.0.100:5500**
+
+### DNS
+With the DNS-Proxy you will get a service, that will add
+dynamically all containers into the DNS.
+So, resolving container-names will be easier.
+But this is still **experimental** in this stack.
+So, it could be removed again. 
+
 
 ### Nexus
 For every build inside a fresh Docker Container, you will need the 
@@ -107,8 +123,8 @@ Additionally the consumer of this repo needs a section called
 The URL here, is based on the NameService resolution that can be used from docker-compose.
 Until now, the storage of the repository manager (nexus) is transient between restarts.
 
-### GOGS - the local github
-With Gogs there is a local git - Server, that will be used for the 
+### Gitea - the local github
+With Gitea (or Gogs) there is a local git - Server, that will be used for the 
 development process. The CI-Services are using this as reference.
 If wanted, github or bitbucket could be used as well. The main target here
 is the 100 percent local managed solution, to be independent 
@@ -126,7 +142,7 @@ The username **admin** is reserved and could not be chosen.
 
 ![_images/git-server/git-server_002.png](_images/git-server/git-server_002.png)
 
-Now you have the possibility to clone git repos into this Gogs instance.
+Now you have the possibility to clone git repos into this Gitea instance.
 All repositories you want to use together with the CI should be here.
 
 ### DroneCI
@@ -169,6 +185,8 @@ running at the same physical machine.
 
 Part number two is the group of CI-Agents. The are responsible to manage the 
 build itself. This means, to create the Docker Container that is used to proceed the defined pipeline.
+You can define as much Agents as you need, even on other machines.
+The important thing is the IP to reach the Drone-Server and the secret.
 
 ````dockerfile
   drone-agent:
@@ -243,4 +261,62 @@ using docker-compose.
 The folder **selenoid/video** is mounted inside the Docker Container
 that is used for the Selenoid Hub.
 
+
+## Limitations so far
+I am not finally done with this stack. There is a lot of possibilities to improve
+the whole thing.
+So feel free to create Merge/Pull Requests to help to make this **round**.
+
+### Help needed
+If you are a Docker Guru, please help me with this DNS 
+related tasks. How to resolve logical container names
+between networks.... ? 
+
+### To many places to edit an IP
+If you are working with a Desktop, or inside a static network, you are fine 
+editing the IP´´ once.
+But if you are using this on a laptop, and changing networks often, you will be 
+bored at some point.
+
+#### Drone Clone Plugin
+There is a BUG at the drone subsystem right now, means, the clone stage is not properly 
+using the DNS. The result is, that you have to use the static IP of 
+your Docker-Host as git-server IP. You can edit this 
+at the app.ini inside the git-server container, or during the 
+first initial web request to configure the git-server.
+
+But If you are using a git-server with an valid static IP, all will be fine.
+Here I am using the external IP from the Docker-Host.
+
+#### settings.xml for the build
+If you want to speed up the build itself, you need a maven mirror
+that is used for all agents. For this I added Nexus to this stack.
+Now, we have the challenge to add to every build config (**drone.yml**) a valid **settings.xml**.
+
+The file itself is not so difficult.
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns="http://maven.apache.org/SETTINGS/1.1.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.1.0 http://maven.apache.org/xsd/settings-1.1.0.xsd">
+  <mirrors>
+    <mirror>
+      <id>central</id>
+      <name>central</name>
+      <url>http://nexus-server:8081/repository/maven-public/</url>
+      <mirrorOf>*</mirrorOf>
+    </mirror>
+  </mirrors>
+</settings>
+```
+
+There is only this DNS Bug again. The Docker container that is using this, will be inside a new network.
+So, logical names are not resolved. Here again we have to use the static IP
+of the hosting Docker-Host. 
+
+#### Selenoid Server
+And again the Docker-Host IP is needed. To use the Selenoid Server for the UI testing,
+the remote driver will need this external IP to connect. 
+If you are using the Vaadin Addons, you can provide this with the external config files.
 

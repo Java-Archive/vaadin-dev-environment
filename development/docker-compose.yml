@@ -1,0 +1,167 @@
+version: '3.5'
+
+services:
+#EXPERIMENTAL unstable starts at 100
+  dns-proxy-server:
+    container_name: dns-proxy-server
+    hostname: dns-proxy-server
+    image: defreitas/dns-proxy-server
+    ports:
+      - 5380:5380
+    volumes:
+#      - $PWD/dns-proxy-server/conf:/app/conf
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: always
+
+#STABLE INFRASTRUCTURE
+  portainer:
+    container_name: portainer
+    hostname: portainer
+    image: portainer/portainer
+    ports:
+      - 9090:9000
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+#STABLE DEVELOPMENT
+  nexus-server:
+    container_name: nexus-server
+    hostname: nexus-server
+    image: sonatype/nexus3:${NEXUS_VERSION}
+    ports:
+      - 8081:8081
+      - 8082:8082
+      - 8083:8083
+    restart: always
+
+  git-server:
+    container_name: git-server
+    hostname: git-server
+    image: gitea/gitea:${GOGS_VERSION}
+    privileged: true
+    ports:
+      - 1022:22
+      - 3000:3000
+    volumes:
+      - $PWD/gitea/data:/data
+    restart: always
+
+#TDD - CI with Drone
+
+  drone-server:
+    container_name: drone-server
+    hostname: drone-server
+    image: drone/drone:${DRONE_VERSION}
+    privileged: true
+    ports:
+      - 8000:8000
+      - 9000:9000
+    volumes:
+      - ./droneio/drone:/var/lib/drone/
+    restart: always
+    depends_on:
+      - git-server
+    environment:
+      - DRONE_DEBUG=true
+      - DRONE_HOST=http://drone-server:8000
+#      - DRONE_HOST=http://${DRONE_DOCKER_EXTERNAL_IP}:8000
+      - DRONE_OPEN=true
+      - DRONE_SECRET=ok
+      - DRONE_PLUGIN_PULL=true
+      - DRONE_GOGS=true
+#      - DRONE_GOGS_URL=http://git-server:3000
+      - DRONE_GOGS_URL=http://${GIT_DOCKER_EXTERNAL_IP}:3000
+      - DRONE_GOGS_PRIVATE_MODE=true
+      - DRONE_GOGS_SKIP_VERIFY=false
+
+  drone-agent-01:
+    container_name: drone-agent-01
+    hostname: drone-agent-01
+    image: drone/agent:${DRONE_VERSION}
+    privileged: true
+    command: agent
+    restart: always
+    depends_on:
+      - drone-server
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - DRONE_SERVER=drone-server:9000
+#      - DRONE_SERVER=http://${DRONE_DOCKER_EXTERNAL_IP}:9000
+      - DRONE_SECRET=ok
+
+  drone-agent-02:
+    container_name: drone-agent-02
+    hostname: drone-agent-02
+    image: drone/agent:${DRONE_VERSION}
+    privileged: true
+    command: agent
+    restart: always
+    depends_on:
+      - drone-server
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - DRONE_SERVER=drone-server:9000
+      - DRONE_SECRET=ok
+
+  drone-agent-03:
+    container_name: drone-agent-03
+    hostname: drone-agent-03
+    image: drone/agent:${DRONE_VERSION}
+    privileged: true
+    command: agent
+    restart: always
+    depends_on:
+      - drone-server
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - DRONE_SERVER=drone-server:9000
+      - DRONE_SECRET=ok
+
+
+
+
+
+
+
+  drone-cli:
+    container_name: drone-cli
+    hostname: drone-cli
+    build: droneio-cli
+    restart: always
+    depends_on:
+      - drone-server
+    environment:
+      - DRONE_SERVER=http://drone-server:8000
+      - DRONE_TOKEN=${DRONE_DOCKER_SEC_TOKEN}
+    stdin_open: true
+    tty: true
+
+
+
+# TDD - UI Testing
+  selenoid-server:
+    container_name: selenoid-server
+    hostname: selenoid-server
+    image: aerokube/selenoid
+    ports:
+      - 4444:4444
+    restart: always
+    volumes:
+      - $PWD/selenoid/browsers.json:/etc/selenoid/browsers.json
+      - $PWD/selenoid/video/:/opt/selenoid/video/
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  selenoid-ui:
+    container_name: selenoid-ui
+    hostname: selenoid-ui
+    image: aerokube/selenoid-ui
+    ports:
+      - 8080:8080
+    restart: always
+    depends_on:
+      - selenoid-server
+    command: [--selenoid-uri, "http://selenoid-server:4444"]
