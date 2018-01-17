@@ -40,9 +40,8 @@ This is my personal, mobile developer and workshop environment.
 
 On both machines the Docker-Network is configured as **192.168.65.0**
 
-
 ### SOCAT Image
-I am using (in an insecure mode) the SOCAT Docker Image to access 
+I am using (**insecure mode**) the SOCAT Docker Image to access 
 the remote machine were the Docker Host is running on.
 To get this you only need the docker command 
 
@@ -70,10 +69,9 @@ services:
     privileged: true
 ````
 
-
 ### Portainer - The Docker UI
 With Portainer, you will get a nice and clear UI to manage your Docker environment.
-During the firat login , you will be able to define the admin user.
+During the first login , you will be able to define the admin user.
 Here in my example I am using username: **admin** with the super-secure password **12345678**
 
 Portainer will give you a lot of information about the docker - host, the images, containers and so on.
