@@ -42,7 +42,34 @@ On both machines the Docker-Network is configured as **192.168.65.0**
 
 
 ### SOCAT Image
-**TODO**
+I am using (in an insecure mode) the SOCAT Docker Image to access 
+the remote machine were the Docker Host is running on.
+To get this you only need the docker command 
+
+````docker
+docker run -v /var/run/docker.sock:/var/run/docker.sock \
+ -d --restart=always --privileged -p 2375:2375 \
+ --name docker-sock-proxy docksal/socat
+````
+
+Now the docker host is accessible under the external docker host IP.
+In my case it is **192.168.0.100**. The same could be done inside a 
+docker-compose script, to minimize the manual work.
+
+````dockerfile
+services:
+  docker-sock-proxy:
+    container_name: docker-sock-proxy
+    hostname: docker-sock-proxy
+    image: docksal/socat
+    ports:
+      - 2375:2375
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: always
+    privileged: true
+````
+
 
 ### Portainer - The Docker UI
 With Portainer, you will get a nice and clear UI to manage your Docker environment.

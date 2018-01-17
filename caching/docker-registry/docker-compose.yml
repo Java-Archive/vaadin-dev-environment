@@ -5,6 +5,8 @@ version: '2'
 services:
     hub-mirror:
         image: registry:2
+        container_name: docker-registry
+        hostname: docker-registry
         restart: always
         ports:
             - 55000:5000
