@@ -9,7 +9,7 @@ services:
     ports:
       - 5380:5380
     volumes:
-#      - $PWD/dns-proxy-server/conf:/app/conf
+      - $PWD/dns-proxy-server/conf:/app/conf
       - /var/run/docker.sock:/var/run/docker.sock
     restart: always
 
@@ -17,7 +17,7 @@ services:
   portainer:
     container_name: portainer
     hostname: portainer
-    image: portainer/portainer
+    image: portainer/portainer:latest
     ports:
       - 9090:9000
     restart: always
@@ -38,7 +38,7 @@ services:
   git-server:
     container_name: git-server
     hostname: git-server
-    image: gitea/gitea:${GOGS_VERSION}
+    image: gitea/gitea:${GIT_VERSION}
     privileged: true
     ports:
       - 1022:22
@@ -121,12 +121,6 @@ services:
       - DRONE_SERVER=drone-server:9000
       - DRONE_SECRET=ok
 
-
-
-
-
-
-
   drone-cli:
     container_name: drone-cli
     hostname: drone-cli
@@ -146,7 +140,9 @@ services:
   selenoid-server:
     container_name: selenoid-server
     hostname: selenoid-server
-    image: aerokube/selenoid
+    image: aerokube/selenoid:${SELENOID_VER}
+    privileged: true
+    network_mode: bridge
     ports:
       - 4444:4444
     restart: always
@@ -154,14 +150,22 @@ services:
       - $PWD/selenoid/browsers.json:/etc/selenoid/browsers.json
       - $PWD/selenoid/video/:/opt/selenoid/video/
       - /var/run/docker.sock:/var/run/docker.sock
+    command: [--conf,             "/etc/selenoid/browsers.json",
+              --video-output-dir, "/opt/selenoid/video",
+              --limit ,           "10" ,
+              --mem,              "128m"]
 
   selenoid-ui:
     container_name: selenoid-ui
     hostname: selenoid-ui
-    image: aerokube/selenoid-ui
+    image: aerokube/selenoid-ui:${SELENOID_VER}
+    privileged: true
+    network_mode: bridge
     ports:
       - 8080:8080
     restart: always
     depends_on:
+      - selenoid-server
+    links:
       - selenoid-server
     command: [--selenoid-uri, "http://selenoid-server:4444"]

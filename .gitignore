@@ -2,6 +2,6 @@
 .idea
 vaadin-dev-environment.iml
 
-gogs/data
+gitea/data
 development/droneio/drone
 

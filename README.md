@@ -271,7 +271,7 @@ aerokube/cm:latest \
 selenoid configure \
 --tmpfs 128 \
 --browsers chrome,firefox,opera,phantomjs \
---last-versions 4
+--last-versions 4 --vnc
 ````
 
 This command will start downloading the latest four available versions 
@@ -345,3 +345,8 @@ And again the Docker-Host IP is needed. To use the Selenoid Server for the UI te
 the remote driver will need this external IP to connect. 
 If you are using the Vaadin Addons, you can provide this with the external config files.
 
+## Roadmap
+
+### stagemonitor
+Stagemonitor is an Open Source APM Solution.
+This is managed by docker-compose as well and will be integrated.
