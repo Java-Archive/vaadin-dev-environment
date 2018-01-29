@@ -64,7 +64,7 @@ services:
     ports:
       - 1022:1022
       - 3300:3300 #stagemonitor is using the port 3000 as well
-      - 3000:3000 #stagemonitor is using the port 3000 as well
+#      - 3000:3000 #stagemonitor is using the port 3000 as well
     volumes:
       - $PWD/gitea/data:/data
       - $PWD/gitea/app.ini:/data/gitea/conf/app.ini
