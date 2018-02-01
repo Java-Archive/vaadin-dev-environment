@@ -1,0 +1,88 @@
+version: '2'
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:5.6.2
+    environment:
+      - cluster.name=monitoring-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m" # adjust heap size, should be half of mem_limit (max 30g)
+      - node.name=es-monitoring-01
+      - xpack.graph.enabled=false
+      - xpack.ml.enabled=false
+      - xpack.monitoring.enabled=false
+      - xpack.security.enabled=false
+      - xpack.watcher.enabled=false
+      - node.attr.box_type=hot
+      ##  Note:
+      #   set - node.attr.box_type=hot for your beefy nodes with SSDs which hold the new indices and - node.attr.box_type=cold for historical nodes (see https://github.com/stagemonitor/stagemonitor/wiki/Elasticsearch#hot-cold-architecture)
+      #   increase the number of replicas (see https://github.com/stagemonitor/stagemonitor/wiki/Configuration-Options#number-of-es-replicas) if you want backups (needs more disk space)
+      #   don't forget to change the 'node.name' if you want multiple instances
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    mem_limit: 1g
+    cap_add:
+      - IPC_LOCK
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+    networks:
+      - esnet
+    logging:
+      driver: json-file
+      options: # log rotation
+        max-size: "10m"
+        max-file: "20"
+  kibana:
+    # image: docker.elastic.co/kibana/kibana:5.6.0
+    # Activates the stagemonitor kibana plugin.
+    # It take several minutes to build the image. Also, the first invocation of Kibana can take a while
+    # If you don't want this, comment out the build line and uncomment the image line
+    build: kibana/
+    ports:
+     - "5601:5601"
+    depends_on:
+     - elasticsearch
+    networks:
+      - esnet
+    environment:
+     - XPACK_GRAPH_ENABLED=false
+     - XPACK_MONITORING_ENABLED=false
+     - XPACK_ML_ENABLED=false
+     - XPACK_REPORTING_ENABLED=false
+     - XPACK_SECURITY_ENABLED=false
+     - XPACK_WATCHER_ENABLED=false
+     - ELASTICSEARCH_URL=http://elasticsearch:9200
+    logging:
+      driver: json-file
+      options: # log rotation
+        max-size: "10m"
+        max-file: "20"
+  grafana:
+    build: grafana/
+    ports:
+      - "3000:3000"
+    depends_on:
+     - elasticsearch
+    networks:
+      - esnet
+    volumes:
+     - grafana:/var/lib/grafana
+    logging:
+      driver: json-file
+      options: # log rotation
+        max-size: "10m"
+        max-file: "20"
+volumes:
+  esdata:
+    driver: local
+  grafana:
+    driver: local
+networks:
+  esnet:
+    driver: bridge
