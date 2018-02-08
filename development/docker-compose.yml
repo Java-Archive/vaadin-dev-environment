@@ -110,8 +110,8 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
-      - DRONE_SERVER=drone-server.home:9000
-#      - DRONE_SERVER=http://${DRONE_DOCKER_EXTERNAL_IP}:9000
+#      - DRONE_SERVER=drone-server.home:9000
+      - DRONE_SERVER=${DRONE_DOCKER_EXTERNAL_IP}:9000
       - DRONE_SECRET=ok
 
   drone-agent-02:
@@ -126,8 +126,8 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
-      - DRONE_SERVER=drone-server:9000
-#      - DRONE_SERVER=http://${DRONE_DOCKER_EXTERNAL_IP}:9000
+#      - DRONE_SERVER=drone-server:9000
+      - DRONE_SERVER=${DRONE_DOCKER_EXTERNAL_IP}:9000
       - DRONE_SECRET=ok
 
   drone-agent-03:
@@ -142,8 +142,8 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
-      - DRONE_SERVER=drone-server:9000
-#      - DRONE_SERVER=http://${DRONE_DOCKER_EXTERNAL_IP}:9000
+#      - DRONE_SERVER=drone-server:9000
+      - DRONE_SERVER=${DRONE_DOCKER_EXTERNAL_IP}:9000
       - DRONE_SECRET=ok
 
 #  drone-cli:
