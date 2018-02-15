@@ -146,18 +146,6 @@ services:
       - DRONE_SERVER=${DRONE_DOCKER_EXTERNAL_IP}:9000
       - DRONE_SECRET=ok
 
-#  drone-cli:
-#    container_name: drone-cli
-#    hostname: drone-cli
-#    build: droneio-cli
-#    restart: always
-#    depends_on:
-#      - drone-server
-#    environment:
-#      - DRONE_SERVER=http://drone-server:8000
-#      - DRONE_TOKEN=${DRONE_DOCKER_SEC_TOKEN}
-#    stdin_open: true
-#    tty: true
 
 
 
