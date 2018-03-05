@@ -6,7 +6,7 @@ ARG USER_HOME_DIR="/root"
 ARG BASE_URL=http://www-eu.apache.org/dist/maven/maven-3/${MAVEN_VERSION}/binaries
 
 RUN curl -sL https://github.com/shyiko/jabba/raw/master/install.sh | \
-    JABBA_COMMAND="install 1.10.0-42 -o /jdk" bash
+    JABBA_COMMAND="install 1.10.0-45 -o /jdk" bash
 
 ENV JAVA_HOME /jdk
 ENV PATH $JAVA_HOME/bin:$PATH
