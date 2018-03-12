@@ -1,7 +1,7 @@
 FROM buildpack-deps:buster-curl
 MAINTAINER sven.ruppert@gmail.com
 
-ARG MAVEN_VERSION=3.5.2
+ARG MAVEN_VERSION=3.5.3
 ARG USER_HOME_DIR="/root"
 ARG BASE_URL=http://www-eu.apache.org/dist/maven/maven-3/${MAVEN_VERSION}/binaries
 
