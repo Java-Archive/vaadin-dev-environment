@@ -4,21 +4,45 @@
 </center>
 
 # Vaadin Developer Environment
+Welcome to the Development Environment for Vaadin.
+With this stack you can ramp up an CI environment in less a hour.
+Based on docker-compose we will manage the infrastructure that can be used by a team
+for the development of java based web apps.
 
-The target of this project is a Vaadin Developer Environment,
-based on docker-compose.
+>This project is not an official Vaadin product, but optimized for 
+Vaadin projects.
+
+## Bird Eye View
+First we will hav a bird eye view on this environment. The main process is the following.
+After you write some code on your machine, you want to test it.
+The active UNIT-tests are running in a locale browser until you are done with the first coding step.
+Now it is time to test this with all UNIT-Tests. But you don´´ want to wait so long, because the browser that is used 
+by the tests are stealing permanently the focus of your mouse/keyboard and so on.
+
+Now you could push your changes to the git-server. This could be github, or the 
+gitea instance that is managed by this docker-compose stack. 
+Now we assume that you are using the own gitea instance. The DroneCI is connected 
+to this git repository (automatically via WebHook) and will start working. 
+The defined pipeline will clone the repo, build and test the app. 
+If configured, the result will be published. This could be, for example, the locale Nexus.
+
+For the UI Tests, the internal selenoid is used per default. 
+
 
 ![_images/overview/overview-001.jpeg](_images/overview/overview-001.jpeg)
 
 
 ## Components
 The components so far are:
- * DNS Server 
  * Portainer    [http://localhost:9090](http://localhost:9090) create new user
  * Nexus:       [http://localhost:8081](http://localhost:8081) default: admin/admin123
- * Gitea:       [http://localhost:3000](http://localhost:3000) what you defined
- * DroneCI:     [http://localhost:8000](http://localhost:8000) user account from gogs
+ * Gitea:       [http://localhost:3000](http://localhost:3300) what you defined
+ * DroneCI:     [http://localhost:8000](http://localhost:8000) user account from gitea
  * Selenoid UI: [http://localhost:8088](http://localhost:8080) no account
+ * stagemonitor (optional)
+    * grafana
+    * kibana
+    * elastic
 
 ### Docker
 You have to install Docker on all machines you want to be involved in this 
@@ -362,6 +386,13 @@ If you are using the Vaadin Addons, you can provide this with the external confi
 
 ## Roadmap
 
+### S3 Storage - Minio cluster
+
+### nginx proxy
+
 ### stagemonitor
 Stagemonitor is an Open Source APM Solution.
 This is managed by docker-compose as well and will be integrated.
+
+
+
