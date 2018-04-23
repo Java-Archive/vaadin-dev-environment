@@ -4,7 +4,8 @@ workspace:
 
 pipeline:
 
-  docker:
+  docker_maven-3.5-jdk-08:
+    group: build
     image: plugins/docker
     secrets: [ docker_username, docker_password ]
     repo: svenruppert/maven-3.5-jdk-08
@@ -17,7 +18,8 @@ pipeline:
           include: master, develop, release/*
           exclude: feature/*
 
-  docker:
+  docker_maven-3.5-jdk-09:
+    group: build
     image: plugins/docker
     secrets: [ docker_username, docker_password ]
     repo: svenruppert/maven-3.5-jdk-09
@@ -30,7 +32,8 @@ pipeline:
           include: master, develop, release/*
           exclude: feature/*
 
-  docker:
+  docker_maven-3.5-jdk-10:
+    group: build
     image: plugins/docker
     secrets: [ docker_username, docker_password ]
     repo: svenruppert/maven-3.5-jdk-10
@@ -43,7 +46,8 @@ pipeline:
           include: master, develop, release/*
           exclude: feature/*
 
-  docker:
+  docker_maven-3.5-jdk-11:
+    group: build
     image: plugins/docker
     secrets: [ docker_username, docker_password ]
     repo: svenruppert/maven-3.5-jdk-11
@@ -55,7 +59,9 @@ pipeline:
         branches:
           include: master, develop, release/*
           exclude: feature/*
-  docker:
+
+  docker_maven-3.5-jdk-graalvm-ce-01:
+    group: build
     image: plugins/docker
     secrets: [ docker_username, docker_password ]
     repo: svenruppert/maven-3.5-jdk-graalvm-ce-01
@@ -68,7 +74,8 @@ pipeline:
           include: master, develop, release/*
           exclude: feature/*
 
-  docker:
+  docker_maven-3.5-jdk-oracle-08:
+    group: build
     image: plugins/docker
     secrets: [ docker_username, docker_password ]
     repo: svenruppert/maven-3.5-jdk-oracle-08
@@ -81,7 +88,8 @@ pipeline:
           include: master, develop, release/*
           exclude: feature/*
 
-  docker:
+  docker_maven-3.5-jdk-oracle-09:
+    group: build
     image: plugins/docker
     secrets: [ docker_username, docker_password ]
     repo: svenruppert/maven-3.5-jdk-oracle-09
@@ -94,7 +102,8 @@ pipeline:
           include: master, develop, release/*
           exclude: feature/*
 
-  docker:
+  docker_maven-3.5-jdk-oracle-10:
+    group: build
     image: plugins/docker
     secrets: [ docker_username, docker_password ]
     repo: svenruppert/maven-3.5-jdk-oracle-10
@@ -107,7 +116,8 @@ pipeline:
           include: master, develop, release/*
           exclude: feature/*
 
-  docker:
+  docker_maven-3.5-jdk-zulu-08:
+    group: build
     image: plugins/docker
     secrets: [ docker_username, docker_password ]
     repo: svenruppert/maven-3.5-jdk-zulu-08
@@ -120,7 +130,8 @@ pipeline:
           include: master, develop, release/*
           exclude: feature/*
 
-  docker:
+  docker_maven-3.5-jdk-zulu-09:
+    group: build
     image: plugins/docker
     secrets: [ docker_username, docker_password ]
     repo: svenruppert/maven-3.5-jdk-zulu-09
@@ -133,7 +144,8 @@ pipeline:
           include: master, develop, release/*
           exclude: feature/*
 
-  docker:
+  docker_maven-3.5-jdk-zulu-10:
+    group: build
     image: plugins/docker
     secrets: [ docker_username, docker_password ]
     repo: svenruppert/maven-3.5-jdk-zulu-10
@@ -146,10 +158,32 @@ pipeline:
           include: master, develop, release/*
           exclude: feature/*
 
+  docker_maven-3.5-jdk-ibm-08:
+    group: build
+    image: plugins/docker
+    secrets: [ docker_username, docker_password ]
+    repo: svenruppert/maven-3.5-jdk-ibm-08
+    tags:
+      - latest
+      - 1.8.0-5.10
+    dockerfile: images/maven-3.5-jdk-ibm-08/Dockerfile
+    when:
+        branches:
+          include: master, develop, release/*
+          exclude: feature/*
 
+  docker_maven-3.5-jdk-ibm-09:
+    group: build
+    image: plugins/docker
+    secrets: [ docker_username, docker_password ]
+    repo: svenruppert/maven-3.5-jdk-ibm-09
+    tags:
+      - latest
+      - 1.9.0-181
+    dockerfile: images/maven-3.5-jdk-ibm-09/Dockerfile
+    when:
+        branches:
+          include: master, develop, release/*
+          exclude: feature/*
 
-#  - svenruppert/maven-3.5-jdk-zulu-09
-#  - svenruppert/maven-3.5-jdk-zulu-10
-#  - svenruppert/maven-3.5-jdk-ibm-08
-#  - svenruppert/maven-3.5-jdk-ibm-09
 
