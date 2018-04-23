@@ -19,7 +19,6 @@ pipeline:
 
 
   docker_maven-3.5-jdk-08:
-    privileged: true
     group: build
     image: plugins/docker
     secrets: [ docker_username, docker_password ]
