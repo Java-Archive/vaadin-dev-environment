@@ -1,0 +1,36 @@
+workspace:
+  base: /drone/src
+  path: vaadin-dev-environment
+
+pipeline:
+  docker:
+    image: plugins/docker
+    secrets: [ docker_username, docker_password ]
+    repo: svenruppert/maven-3.5-jdk-08
+    tags:
+      - latest
+      - 1.8.162-00
+    dockerfile: images/maven-3.5-jdk-08/Dockerfile
+    when:
+        branches:
+          include: master, develop, release/*
+          exclude: feature/*
+
+
+
+
+
+#  - svenruppert/maven-3.5-jdk-08
+#  - svenruppert/maven-3.5-jdk-09
+#  - svenruppert/maven-3.5-jdk-10
+#  - svenruppert/maven-3.5-jdk-11
+#  - svenruppert/maven-3.5-jdk-graalvm-ce-01
+#  - svenruppert/maven-3.5-jdk-oracle-08
+#  - svenruppert/maven-3.5-jdk-oracle-09
+#  - svenruppert/maven-3.5-jdk-oracle-10
+#  - svenruppert/maven-3.5-jdk-zulu-08
+#  - svenruppert/maven-3.5-jdk-zulu-09
+#  - svenruppert/maven-3.5-jdk-zulu-10
+#  - svenruppert/maven-3.5-jdk-ibm-08
+#  - svenruppert/maven-3.5-jdk-ibm-09
+
