@@ -1,4 +1,4 @@
-# Maven - JDK 10 - Docker Image
+# Maven - JDK 11 - Docker Image
 
 ```
 docker build -t svenruppert/maven-3.5-jdk-11 .

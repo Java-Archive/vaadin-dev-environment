@@ -11,7 +11,7 @@ ENV PATH $JAVA_HOME/bin:$PATH
 ENV MAVEN_HOME /usr/share/maven
 ENV MAVEN_CONFIG "$USER_HOME_DIR/.m2"
 
-RUN /jdk/java -version
+RUN java -version
 RUN mvn -version
 
 #ENTRYPOINT ["/usr/local/bin/mvn-entrypoint.sh"]

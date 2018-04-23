@@ -1,4 +1,4 @@
-# Maven - JDK IBM 8 - Docker Image
+# Maven - JDK IBM 9 - Docker Image
 
 ```
 docker build -t svenruppert/maven-3.5-jdk-ibm-09 .
