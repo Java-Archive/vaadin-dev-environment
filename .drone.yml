@@ -4,18 +4,18 @@ workspace:
 
 pipeline:
 
-  docker_maven-3.5-no-jdk:
-    image: plugins/docker
-    secrets: [ docker_username, docker_password ]
-    repo: svenruppert/maven-3.5-no-jdk
-    tags:
-      - latest
-      - 3.5.3
-    dockerfile: images/maven-3.5-no-jdk/Dockerfile
-    when:
-        branches:
-          include: master, develop, release/*
-          exclude: feature/*
+#  docker_maven-3.5-no-jdk:
+#    image: plugins/docker
+#    secrets: [ docker_username, docker_password ]
+#    repo: svenruppert/maven-3.5-no-jdk
+#    tags:
+#      - latest
+#      - 3.5.3
+#    dockerfile: images/maven-3.5-no-jdk/Dockerfile
+#    when:
+#        branches:
+#          include: master, develop, release/*
+#          exclude: feature/*
 
 
   docker_maven-3.5-jdk-08:
