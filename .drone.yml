@@ -10,7 +10,7 @@ pipeline:
     repo: svenruppert/maven-3.5-no-jdk
     tags:
       - latest
-      - 1.8.162-00
+      - 3.5.3
     dockerfile: images/maven-3.5-no-jdk/Dockerfile
     when:
         branches:
