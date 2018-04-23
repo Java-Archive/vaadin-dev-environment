@@ -1,4 +1,7 @@
 #!/bin/bash
+
+cd maven-3.5-no-jdk ; chmod 777 build.sh : ./build.sh ; cd .. ;
+
 cd maven-3.5-jdk-08 ; chmod 777 build.sh ; ./build.sh ; cd .. ;
 cd maven-3.5-jdk-09 ; chmod 777 build.sh ; ./build.sh ; cd .. ;
 cd maven-3.5-jdk-10 ; chmod 777 build.sh ; ./build.sh ; cd .. ;
