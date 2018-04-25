@@ -38,7 +38,7 @@ The components so far are:
  * Nexus:       [http://localhost:8081](http://localhost:8081) default: admin/admin123
  * Gitea:       [http://localhost:3300](http://localhost:3300) what you defined
  * DroneCI:     [http://localhost:8000](http://localhost:8000) user account from gitea
- * Selenoid UI: [http://localhost:8088](http://localhost:8080) no account
+ * Selenoid UI: [http://localhost:8888](http://localhost:8888) no account
  * stagemonitor (optional)
     * grafana
     * kibana
