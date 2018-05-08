@@ -36,9 +36,9 @@ For the UI Tests, the internal selenoid is used per default.
 The components so far are:
  * Portainer    [http://localhost:9090](http://localhost:9090) create new user
  * Nexus:       [http://localhost:8081](http://localhost:8081) default: admin/admin123
- * Gitea:       [http://localhost:3000](http://localhost:3300) what you defined
+ * Gitea:       [http://localhost:3300](http://localhost:3300) what you defined
  * DroneCI:     [http://localhost:8000](http://localhost:8000) user account from gitea
- * Selenoid UI: [http://localhost:8088](http://localhost:8080) no account
+ * Selenoid UI: [http://localhost:8888](http://localhost:8888) no account
  * stagemonitor (optional)
     * grafana
     * kibana
