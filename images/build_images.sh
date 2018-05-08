@@ -10,8 +10,10 @@ cd maven-3.5-jdk-11 ; chmod 777 build.sh ; ./build.sh ; cd .. ;
 cd maven-3.5-jdk-graalvm-ce-01 ; chmod 777 build.sh ; ./build.sh ; cd .. ;
 
 cd maven-3.5-jdk-oracle-08 ; chmod 777 build.sh ; ./build.sh ; cd .. ;
-cd maven-3.5-jdk-oracle-09 ; chmod 777 build.sh ; ./build.sh ; cd .. ;
+# not supported from oracle anymore
+#cd maven-3.5-jdk-oracle-09 ; chmod 777 build.sh ; ./build.sh ; cd .. ;
 cd maven-3.5-jdk-oracle-10 ; chmod 777 build.sh ; ./build.sh ; cd .. ;
+cd maven-3.5-jdk-oracle-11 ; chmod 777 build.sh ; ./build.sh ; cd .. ;
 
 cd maven-3.5-jdk-zulu-08 ; chmod 777 build.sh ; ./build.sh ; cd .. ;
 cd maven-3.5-jdk-zulu-09 ; chmod 777 build.sh ; ./build.sh ; cd .. ;

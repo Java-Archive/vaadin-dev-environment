@@ -4,8 +4,8 @@ MAINTAINER sven.ruppert@gmail.com
 ARG USER_HOME_DIR="/root"
 
 RUN curl -sL https://github.com/shyiko/jabba/raw/master/install.sh | \
-#    JABBA_COMMAND="install zulu@1.10 -o /jdk" bash
-    JABBA_COMMAND="install zulu@1.10.0=tgz+https://cdn.azul.com/zulu/bin/zulu10.1+11-jdk10-linux_x64.tar.gz -o /jdk" bash
+    JABBA_COMMAND="install zulu@1.10.0 -o /jdk" bash
+#    JABBA_COMMAND="install zulu@1.10.0=tgz+https://cdn.azul.com/zulu/bin/zulu10.1+11-jdk10-linux_x64.tar.gz -o /jdk" bash
 
 ENV JAVA_HOME /jdk
 ENV PATH $JAVA_HOME/bin:$PATH
