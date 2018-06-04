@@ -1,48 +1,29 @@
 version: '3.5'
 
 services:
-#EXPERIMENTAL unstable starts at 100
 
-#  dns-server:
-#    container_name: dns-server
-#    hostname: dns-server
-#    image: sameersbn/bind:latest
-#    network_mode: bridge
-#    ports:
-#      - ${DNS_EXTERNAL_IP}:10000:10000
-#      - ${DNS_EXTERNAL_IP}:53:53/udp
-#    dns: 127.0.0.1
-#    environment:
-#      - ROOT_PASSWORD=SecretPassword
-#    volumes:
-#      - $PWD/dns-server/:/data
-#
-#  dns-proxy-server:
-#    container_name: dns-proxy-server
-#    hostname: dns-proxy-server
-#    image: defreitas/dns-proxy-server
-#    network_mode: bridge
-#    ports:
-#      - 5380:5380
-#    volumes:
-#      - $PWD/dns-proxy-server/conf:/app/conf
-##      - /etc/resolv.conf:/etc/resolv.conf
-#      - /var/run/docker.sock:/var/run/docker.sock
-#    restart: always
 
-#STABLE INFRASTRUCTURE
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    container_name: nginx-proxy
+    ports:
+      - "80:80"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
   portainer:
     container_name: portainer
     hostname: portainer
     image: portainer/portainer:latest
     ports:
-      - 9090:9000
+      - 9000
     restart: always
     volumes:
       - $PWD/portainer/data:/data
       - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - VIRTUAL_HOST=portainer.rapidpm.org
 
-#STABLE DEVELOPMENT
   nexus-server:
     container_name: nexus-server
     hostname: nexus-server
@@ -64,13 +45,10 @@ services:
     ports:
       - 1022:1022
       - 3300:3300 #stagemonitor is using the port 3000 as well
-#      - 3000:3000 #stagemonitor is using the port 3000 as well
     volumes:
       - $PWD/gitea/data:/data
       - $PWD/gitea/app.ini:/data/gitea/conf/app.ini
     restart: always
-
-#TDD - CI with Drone
 
   drone-server:
     container_name: drone-server
@@ -85,6 +63,7 @@ services:
     restart: always
     depends_on:
       - git-server
+      - nexus-server
     environment:
       - DRONE_DEBUG=true
 #      - DRONE_HOST=http://drone-server.home:8000
@@ -226,10 +205,6 @@ services:
       - DRONE_SERVER=${DRONE_DOCKER_EXTERNAL_IP}:9000
       - DRONE_SECRET=ok
 
-
-
-
-# TDD - UI Testing
   selenoid-server:
     container_name: selenoid-server
     hostname: selenoid-server
@@ -298,8 +273,8 @@ services:
     ports:
       - "9091:9000"
     environment:
-      - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
-      - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
+      - MINIO_ACCESS_KEY=${MINIO_USER_KEY}
+      - MINIO_SECRET_KEY=${MINIO_PASSWD_KEY}
     volumes:
       - $PWD/minio/data/:/data
     command: server /data
