@@ -208,39 +208,47 @@ services:
 #      - DRONE_SERVER=${DRONE_DOCKER_EXTERNAL_IP}:9000
 #      - DRONE_SECRET=ok
 #
-#  selenoid-server:
-#    container_name: selenoid-server
-#    hostname: selenoid-server
-#    image: aerokube/selenoid:${SELENOID_VER}
-#    privileged: true
-#    network_mode: bridge
-#    ports:
-#      - 4444:4444
-#    volumes:
-#      - $PWD/selenoid/browsers.json:/etc/selenoid/browsers.json
-#      - $PWD/selenoid/video/:/opt/selenoid/video/
-#      - /var/run/docker.sock:/var/run/docker.sock
-#    command: [--conf,             "/etc/selenoid/browsers.json",
-#              --video-output-dir, "/opt/selenoid/video",
-#              --limit ,           "10" ,
-#              --mem,              "128m"]
-#
-#  selenoid-ui:
-#    container_name: selenoid-ui
-#    hostname: selenoid-ui
-#    image: aerokube/selenoid-ui:${SELENOID_VER}
-#    privileged: true
-#    network_mode: bridge
-#    ports:
-#      - 8888:8080  #port 8080 is used by FnProject
-#    restart: always
-#    depends_on:
-#      - selenoid-server
-#    links:
-#      - selenoid-server
-#    command: [--selenoid-uri, "http://selenoid-server:4444"]
-#
-#
+  selenoid-server:
+    container_name: selenoid-server
+    hostname: selenoid-server
+    image: aerokube/selenoid:${SELENOID_VER}
+    privileged: true
+    network_mode: bridge
+    ports:
+      - 4444
+    volumes:
+      - $PWD/selenoid/browsers.json:/etc/selenoid/browsers.json
+      - $PWD/selenoid/video/:/opt/selenoid/video/
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - VIRTUAL_HOST=selenoid.rapidpm.org
+    depends_on:
+      - nginx-proxy
+    command: [--conf,             "/etc/selenoid/browsers.json",
+              --video-output-dir, "/opt/selenoid/video",
+              --limit ,           "10" ,
+              --mem,              "128m"]
+
+  selenoid-ui:
+    container_name: selenoid-ui
+    hostname: selenoid-ui
+    image: aerokube/selenoid-ui:${SELENOID_VER}
+    privileged: true
+    network_mode: bridge
+    ports:
+      - 8080  #port 8080 is used by FnProject
+    restart: always
+    depends_on:
+      - selenoid-server
+    links:
+      - selenoid-server
+    environment:
+      - VIRTUAL_HOST=selenoid-ui.rapidpm.org
+    depends_on:
+      - nginx-proxy
+    command: [--selenoid-uri, "http://selenoid-server:4444"]
+
+
   youtrack:
       image: jetbrains/youtrack:2018.2.42133
       container_name: youtrack
@@ -289,29 +297,36 @@ services:
     depends_on:
       - nginx-proxy
     command: server /data
-#
-#
-#  fnserver:
-#    image: fnproject/fnserver
-#    container_name: fnserver
-#    hostname: fnserver
-#    restart: always
-#    ports:
-#      - "6666:8080"
-#    volumes:
-#      - /var/run/docker.sock:/var/run/docker.sock
-#
-#  fnserver-ui:
-#    depends_on:
-#      - fnserver
-#    image: fnproject/ui
-#    container_name: fnserver-ui
-#    hostname: fnserver-ui
-#    restart: always
-#    ports:
-#      - "6640:4000"
-#    links:
-#      - "fnserver"
-#    environment:
-#      - FN_API_URL=http://fnserver:8080
-#
+
+
+  fnserver:
+    image: fnproject/fnserver
+    container_name: fnserver
+    hostname: fnserver
+    ports:
+      - "8080"
+    environment:
+      - VIRTUAL_HOST=fn.rapidpm.org
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - nginx-proxy
+
+  fnserver-ui:
+
+    image: fnproject/ui
+    container_name: fnserver-ui
+    hostname: fnserver-ui
+    ports:
+      - "4000"
+    depends_on:
+      - nginx-proxy
+      - fnserver
+    links:
+      - fnserver
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - VIRTUAL_HOST=fn-ui.rapidpm.org
+      - FN_API_URL=http://fnserver:8080
+
