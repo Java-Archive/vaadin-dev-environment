@@ -212,8 +212,6 @@ services:
     container_name: selenoid-server
     hostname: selenoid-server
     image: aerokube/selenoid:${SELENOID_VER}
-    privileged: true
-    network_mode: bridge
     ports:
       - 4444
     volumes:
@@ -233,11 +231,10 @@ services:
     container_name: selenoid-ui
     hostname: selenoid-ui
     image: aerokube/selenoid-ui:${SELENOID_VER}
-    privileged: true
-    network_mode: bridge
+#    privileged: true
+#    network_mode: bridge
     ports:
       - 8080  #port 8080 is used by FnProject
-    restart: always
     depends_on:
       - selenoid-server
     links:
