@@ -252,7 +252,6 @@ services:
           - $PWD/youtrack/conf:/opt/youtrack/conf
           - $PWD/youtrack/logs:/opt/youtrack/logs
           - $PWD/youtrack/backups:/opt/youtrack/backups
-          - /var/run/docker.sock:/var/run/docker.sock
       environment:
         - VIRTUAL_HOST=issues.rapidpm.org
       depends_on:
@@ -269,7 +268,6 @@ services:
           - $PWD/upsource/conf:/opt/upsource/conf
           - $PWD/upsource/logs:/opt/upsource/logs
           - $PWD/upsource/backups:/opt/upsource/backups
-          - /var/run/docker.sock:/var/run/docker.sock
       environment:
         - VIRTUAL_HOST=review.rapidpm.org
       depends_on:
