@@ -21,7 +21,7 @@ services:
       - $PWD/portainer/data:/data
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
-      - VIRTUAL_HOST=portainer.rapidpm.org
+      - VIRTUAL_HOST=${VIRTUAL_HOST_PORTAINER}
     depends_on:
       - nginx-proxy
 
@@ -37,7 +37,7 @@ services:
       - $PWD/nexus/data:/nexus-data
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
-      - VIRTUAL_HOST=nexus.rapidpm.org
+      - VIRTUAL_HOST=${VIRTUAL_HOST_NEXUS}
     depends_on:
       - nginx-proxy
 
@@ -53,7 +53,7 @@ services:
       - $PWD/gitea/app.ini:/data/gitea/conf/app.ini
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
-      - VIRTUAL_HOST=git.rapidpm.org
+      - VIRTUAL_HOST=${VIRTUAL_HOST_GIT}
       - VIRTUAL_PORT=3000
     depends_on:
       - nginx-proxy
@@ -73,36 +73,34 @@ services:
       - git-server
       - nexus-server
     environment:
-      - VIRTUAL_HOST=drone.rapidpm.org
+      - VIRTUAL_HOST=${VIRTUAL_HOST_DRONE}
       - VIRTUAL_PORT=8000
       - DRONE_DEBUG=true
 #      - DRONE_HOST=http://drone-server.home:8000
-#      - DRONE_HOST=http://${DRONE_DOCKER_EXTERNAL_IP}:8000
-      - DRONE_HOST=http://drone.rapidpm.org
+      - DRONE_HOST=http://${VIRTUAL_HOST_DRONE}
       - DRONE_OPEN=true
       - DRONE_SECRET=ok
       - DRONE_PLUGIN_PULL=true
       - DRONE_GOGS=true
-      - DRONE_GOGS_URL=http://git-server:3000
-#      - DRONE_GOGS_URL=http://${GIT_DOCKER_EXTERNAL_IP}:3300
+      - DRONE_GOGS_URL=http://${VIRTUAL_HOST_GIT}
 #      - DRONE_GOGS_URL=http://git.rapidpm.org
       - DRONE_GOGS_PRIVATE_MODE=true
       - DRONE_GOGS_SKIP_VERIFY=false
 #
-#  drone-agent-01:
-#    container_name: drone-agent-01
-#    hostname: drone-agent-01
-#    image: drone/agent:${DRONE_VERSION}
-#    privileged: true
-#    command: agent
-#    depends_on:
-#      - drone-server
-#    volumes:
-#      - /var/run/docker.sock:/var/run/docker.sock
-#    environment:
-##      - DRONE_SERVER=drone-server.home:9000
-#      - DRONE_SERVER=${DRONE_DOCKER_EXTERNAL_IP}:9000
-#      - DRONE_SECRET=ok
+  drone-agent-01:
+    container_name: drone-agent-01
+    hostname: drone-agent-01
+    image: drone/agent:${DRONE_VERSION}
+    privileged: true
+    command: agent
+    depends_on:
+      - drone-server
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - DRONE_SERVER=drone-server:9000
+#      - DRONE_SERVER=${VIRTUAL_HOST_DRONE}:9000
+      - DRONE_SECRET=ok
 #
 #  drone-agent-02:
 #    container_name: drone-agent-02
@@ -220,7 +218,7 @@ services:
       - $PWD/selenoid/video/:/opt/selenoid/video/
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
-      - VIRTUAL_HOST=selenoid.rapidpm.org
+      - VIRTUAL_HOST=${VIRTUAL_HOST_SELENOID}
     depends_on:
       - nginx-proxy
     command: [--conf,             "/etc/selenoid/browsers.json",
@@ -241,7 +239,7 @@ services:
     links:
       - selenoid-server
     environment:
-      - VIRTUAL_HOST=selenoid-ui.rapidpm.org
+      - VIRTUAL_HOST=${VIRTUAL_HOST_SELENOID_UI}
     depends_on:
       - nginx-proxy
     command: [--selenoid-uri, "http://selenoid-server:4444"]
@@ -259,7 +257,7 @@ services:
           - $PWD/youtrack/logs:/opt/youtrack/logs
           - $PWD/youtrack/backups:/opt/youtrack/backups
       environment:
-        - VIRTUAL_HOST=issues.rapidpm.org
+        - VIRTUAL_HOST=${VIRTUAL_HOST_ISSUES}
       depends_on:
         - nginx-proxy
 
@@ -275,7 +273,7 @@ services:
           - $PWD/upsource/logs:/opt/upsource/logs
           - $PWD/upsource/backups:/opt/upsource/backups
       environment:
-        - VIRTUAL_HOST=review.rapidpm.org
+        - VIRTUAL_HOST=${VIRTUAL_HOST_REVIEW}
       depends_on:
         - nginx-proxy
 
@@ -286,7 +284,7 @@ services:
     ports:
       - 9000
     environment:
-      - VIRTUAL_HOST=s3.rapidpm.org
+      - VIRTUAL_HOST=${VIRTUAL_HOST_S3}
       - MINIO_ACCESS_KEY=minio
       - MINIO_SECRET_KEY=miniopasswd
     volumes:
@@ -305,7 +303,7 @@ services:
       - 8080
       - 2375
     environment:
-      - VIRTUAL_HOST=fn.rapidpm.org
+      - VIRTUAL_HOST=${VIRTUAL_HOST_FN}
       - VIRTUAL_PORT=8080
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
@@ -327,6 +325,6 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
-      - VIRTUAL_HOST=fn-ui.rapidpm.org
+      - VIRTUAL_HOST=${VIRTUAL_HOST_FN_UI}
       - FN_API_URL=http://fnserver:8080
 
