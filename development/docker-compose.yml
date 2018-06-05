@@ -262,18 +262,23 @@ services:
 #          - $PWD/upsource/backups:/opt/upsource/backups
 #
 #
-#  minio:
-#    image: minio/minio
-#    container_name: minio
-#    hostname: minio
-#    ports:
-#      - "9091:9000"
-#    environment:
-#      - MINIO_ACCESS_KEY=${MINIO_USER_KEY}
-#      - MINIO_SECRET_KEY=${MINIO_PASSWD_KEY}
-#    volumes:
-#      - $PWD/minio/data/:/data
-#    command: server /data
+  minio:
+    image: minio/minio
+    container_name: minio
+    hostname: minio
+    ports:
+      - 9000
+    environment:
+      - MINIO_ACCESS_KEY=${MINIO_USER_KEY}
+      - MINIO_SECRET_KEY=${MINIO_PASSWD_KEY}
+    volumes:
+      - $PWD/minio/data/:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - VIRTUAL_HOST=bucket.rapidpm.org
+    depends_on:
+      - nginx-proxy
+    command: server /data
 #
 #
 #  fnserver:
