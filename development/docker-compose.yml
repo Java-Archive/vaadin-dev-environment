@@ -23,18 +23,20 @@ services:
     environment:
       - VIRTUAL_HOST=portainer.rapidpm.org
 
-#  nexus-server:
-#    container_name: nexus-server
-#    hostname: nexus-server
-#    image: sonatype/nexus3:${NEXUS_VERSION}
-#    network_mode: bridge
-#    ports:
-#      - 8081:8081
+  nexus-server:
+    container_name: nexus-server
+    hostname: nexus-server
+    image: sonatype/nexus3:${NEXUS_VERSION}
+    network_mode: bridge
+    ports:
+      - 8081
 #      - 8082:8082
 #      - 8083:8083
-#    volumes:
-#      - $PWD/nexus/data:/nexus-data
-#
+    volumes:
+      - $PWD/nexus/data:/nexus-data
+    environment:
+      - VIRTUAL_HOST=nexus.rapidpm.org
+
 #  git-server:
 #    container_name: git-server
 #    hostname: git-server
