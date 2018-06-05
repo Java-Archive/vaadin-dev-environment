@@ -241,31 +241,40 @@ services:
 #    command: [--selenoid-uri, "http://selenoid-server:4444"]
 #
 #
-#  youtrack:
-#      image: jetbrains/youtrack:2018.2.42133
-#      container_name: youtrack
-#      hostname: youtrack
-#      ports:
-#          - 7777:8080
-#      volumes:
-#          - $PWD/youtrack/data:/opt/youtrack/data
-#          - $PWD/youtrack/conf:/opt/youtrack/conf
-#          - $PWD/youtrack/logs:/opt/youtrack/logs
-#          - $PWD/youtrack/backups:/opt/youtrack/backups
-#
-#  upsource:
-#      image: jetbrains/upsource:2018.1.357
-#      container_name: upsource
-#      hostname: upsource
-#      ports:
-#          - 7788:8080
-#      volumes:
-#          - $PWD/upsource/data:/opt/upsource/data
-#          - $PWD/upsource/conf:/opt/upsource/conf
-#          - $PWD/upsource/logs:/opt/upsource/logs
-#          - $PWD/upsource/backups:/opt/upsource/backups
-#
-#
+  youtrack:
+      image: jetbrains/youtrack:2018.2.42133
+      container_name: youtrack
+      hostname: youtrack
+      ports:
+          - 8080
+      volumes:
+          - $PWD/youtrack/data:/opt/youtrack/data
+          - $PWD/youtrack/conf:/opt/youtrack/conf
+          - $PWD/youtrack/logs:/opt/youtrack/logs
+          - $PWD/youtrack/backups:/opt/youtrack/backups
+          - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - VIRTUAL_HOST=issues.rapidpm.org
+    depends_on:
+      - nginx-proxy
+
+  upsource:
+      image: jetbrains/upsource:2018.1.357
+      container_name: upsource
+      hostname: upsource
+      ports:
+          - 8080
+      volumes:
+          - $PWD/upsource/data:/opt/upsource/data
+          - $PWD/upsource/conf:/opt/upsource/conf
+          - $PWD/upsource/logs:/opt/upsource/logs
+          - $PWD/upsource/backups:/opt/upsource/backups
+          - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - VIRTUAL_HOST=review.rapidpm.org
+    depends_on:
+      - nginx-proxy
+
   minio:
     image: minio/minio
     container_name: minio
@@ -273,13 +282,12 @@ services:
     ports:
       - 9000
     environment:
+      - VIRTUAL_HOST=bucket.rapidpm.org
       - MINIO_ACCESS_KEY=${MINIO_USER_KEY}
       - MINIO_SECRET_KEY=${MINIO_PASSWD_KEY}
     volumes:
       - $PWD/minio/data/:/data
       - /var/run/docker.sock:/var/run/docker.sock
-    environment:
-      - VIRTUAL_HOST=bucket.rapidpm.org
     depends_on:
       - nginx-proxy
     command: server /data
