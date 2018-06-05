@@ -27,11 +27,11 @@ services:
     container_name: nexus-server
     hostname: nexus-server
     image: sonatype/nexus3:${NEXUS_VERSION}
-    network_mode: bridge
+#    network_mode: bridge
     ports:
       - 8081
-      - 8082
-      - 8083
+#      - 8082
+#      - 8083
     volumes:
       - $PWD/nexus/data:/nexus-data
       - /var/run/docker.sock:/var/run/docker.sock
