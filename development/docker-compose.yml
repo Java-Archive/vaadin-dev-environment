@@ -285,7 +285,7 @@ services:
     environment:
       - VIRTUAL_HOST=s3.rapidpm.org
       - MINIO_ACCESS_KEY=minio
-      - MINIO_SECRET_KEY=miniopw
+      - MINIO_SECRET_KEY=miniopasswd
     volumes:
       - $PWD/minio/data/:/data
       - /var/run/docker.sock:/var/run/docker.sock
