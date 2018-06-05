@@ -50,7 +50,7 @@ services:
       - 22
     volumes:
       - $PWD/gitea/data:/data
-#      - $PWD/gitea/app.ini:/data/gitea/conf/app.ini
+      - $PWD/gitea/app.ini:/data/gitea/conf/app.ini
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
       - VIRTUAL_HOST=git.rapidpm.org
