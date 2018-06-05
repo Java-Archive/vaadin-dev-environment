@@ -45,7 +45,7 @@ services:
     container_name: git-server
     hostname: git-server
     image: gitea/gitea:${GIT_VERSION}
-#    privileged: true
+    privileged: true
     ports:
       - 80
       - 22
