@@ -47,8 +47,8 @@ services:
     image: gitea/gitea:${GIT_VERSION}
     privileged: true
     ports:
-      - 80
-      - 22
+      - 3000
+      - 1022
     volumes:
       - $PWD/gitea/data:/data
       - $PWD/gitea/app.ini:/data/gitea/conf/app.ini
