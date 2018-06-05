@@ -288,9 +288,9 @@ services:
     ports:
       - 9000
     environment:
-      - VIRTUAL_HOST=bucket.rapidpm.org
-      - MINIO_ACCESS_KEY=${MINIO_USER_KEY}
-      - MINIO_SECRET_KEY=${MINIO_PASSWD_KEY}
+      - VIRTUAL_HOST=s3.rapidpm.org
+      - MINIO_ACCESS_KEY=minio
+      - MINIO_SECRET_KEY=miniopw
     volumes:
       - $PWD/minio/data/:/data
       - /var/run/docker.sock:/var/run/docker.sock
