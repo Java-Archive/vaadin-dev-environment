@@ -17,7 +17,6 @@ services:
     image: portainer/portainer:latest
     ports:
       - 9000
-    restart: always
     volumes:
       - $PWD/portainer/data:/data
       - /var/run/docker.sock:/var/run/docker.sock
@@ -35,7 +34,6 @@ services:
       - 8083:8083
     volumes:
       - $PWD/nexus/data:/nexus-data
-    restart: always
 
   git-server:
     container_name: git-server
@@ -48,7 +46,6 @@ services:
     volumes:
       - $PWD/gitea/data:/data
       - $PWD/gitea/app.ini:/data/gitea/conf/app.ini
-    restart: always
 
   drone-server:
     container_name: drone-server
@@ -60,7 +57,6 @@ services:
       - 9000:9000
     volumes:
       - ./droneio/drone:/var/lib/drone/
-    restart: always
     depends_on:
       - git-server
       - nexus-server
@@ -83,7 +79,6 @@ services:
     image: drone/agent:${DRONE_VERSION}
     privileged: true
     command: agent
-    restart: always
     depends_on:
       - drone-server
     volumes:
@@ -99,7 +94,6 @@ services:
     image: drone/agent:${DRONE_VERSION}
     privileged: true
     command: agent
-    restart: always
     depends_on:
       - drone-server
     volumes:
@@ -115,7 +109,6 @@ services:
     image: drone/agent:${DRONE_VERSION}
     privileged: true
     command: agent
-    restart: always
     depends_on:
       - drone-server
     volumes:
@@ -131,7 +124,6 @@ services:
     image: drone/agent:${DRONE_VERSION}
     privileged: true
     command: agent
-    restart: always
     depends_on:
       - drone-server
     volumes:
@@ -147,7 +139,6 @@ services:
     image: drone/agent:${DRONE_VERSION}
     privileged: true
     command: agent
-    restart: always
     depends_on:
       - drone-server
     volumes:
@@ -163,7 +154,6 @@ services:
     image: drone/agent:${DRONE_VERSION}
     privileged: true
     command: agent
-    restart: always
     depends_on:
       - drone-server
     volumes:
@@ -179,7 +169,6 @@ services:
     image: drone/agent:${DRONE_VERSION}
     privileged: true
     command: agent
-    restart: always
     depends_on:
       - drone-server
     volumes:
@@ -195,7 +184,6 @@ services:
     image: drone/agent:${DRONE_VERSION}
     privileged: true
     command: agent
-    restart: always
     depends_on:
       - drone-server
     volumes:
@@ -213,7 +201,6 @@ services:
     network_mode: bridge
     ports:
       - 4444:4444
-    restart: always
     volumes:
       - $PWD/selenoid/browsers.json:/etc/selenoid/browsers.json
       - $PWD/selenoid/video/:/opt/selenoid/video/
@@ -245,7 +232,6 @@ services:
       hostname: youtrack
       ports:
           - 7777:8080
-      restart: always
       volumes:
           - $PWD/youtrack/data:/opt/youtrack/data
           - $PWD/youtrack/conf:/opt/youtrack/conf
@@ -258,7 +244,6 @@ services:
       hostname: upsource
       ports:
           - 7788:8080
-      restart: always
       volumes:
           - $PWD/upsource/data:/opt/upsource/data
           - $PWD/upsource/conf:/opt/upsource/conf
