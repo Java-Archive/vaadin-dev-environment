@@ -27,7 +27,6 @@ services:
     container_name: nexus-server
     hostname: nexus-server
     image: sonatype/nexus3:${NEXUS_VERSION}
-#    network_mode: bridge
     ports:
       - 8081
 #      - 8082
@@ -38,18 +37,20 @@ services:
     environment:
       - VIRTUAL_HOST=nexus.rapidpm.org
 
-#  git-server:
-#    container_name: git-server
-#    hostname: git-server
-#    image: gitea/gitea:${GIT_VERSION}
-#    privileged: true
-#    ports:
+  git-server:
+    container_name: git-server
+    hostname: git-server
+    image: gitea/gitea:${GIT_VERSION}
+    privileged: true
+    ports:
 #      - 1022:1022
-#      - 3300:3300 #stagemonitor is using the port 3000 as well
-#    volumes:
-#      - $PWD/gitea/data:/data
-#      - $PWD/gitea/app.ini:/data/gitea/conf/app.ini
-#
+      - 3300 #stagemonitor is using the port 3000 as well
+    volumes:
+      - $PWD/gitea/data:/data
+      - $PWD/gitea/app.ini:/data/gitea/conf/app.ini
+    environment:
+      - VIRTUAL_HOST=git.rapidpm.org
+
 #  drone-server:
 #    container_name: drone-server
 #    hostname: drone-server
