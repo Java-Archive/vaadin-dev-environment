@@ -45,7 +45,7 @@ services:
     container_name: git-server
     hostname: git-server
     image: gitea/gitea:${GIT_VERSION}
-    privileged: true
+#    privileged: true
     ports:
 #      - 1022:1022
       - 3300 #stagemonitor is using the port 3000 as well
