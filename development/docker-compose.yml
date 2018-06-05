@@ -9,7 +9,7 @@ services:
     ports:
       - "80:80"
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/run/docker.sock:/tmp/docker.sock:ro
 
   portainer:
     container_name: portainer
