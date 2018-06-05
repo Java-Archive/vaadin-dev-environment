@@ -76,14 +76,12 @@ services:
       - VIRTUAL_HOST=${VIRTUAL_HOST_DRONE}
       - VIRTUAL_PORT=8000
       - DRONE_DEBUG=true
-#      - DRONE_HOST=http://drone-server.home:8000
       - DRONE_HOST=http://${VIRTUAL_HOST_DRONE}
       - DRONE_OPEN=true
       - DRONE_SECRET=ok
       - DRONE_PLUGIN_PULL=true
       - DRONE_GOGS=true
       - DRONE_GOGS_URL=http://${VIRTUAL_HOST_GIT}
-#      - DRONE_GOGS_URL=http://git.rapidpm.org
       - DRONE_GOGS_PRIVATE_MODE=true
       - DRONE_GOGS_SKIP_VERIFY=false
 #
@@ -101,52 +99,52 @@ services:
       - DRONE_SERVER=drone-server:9000
 #      - DRONE_SERVER=${VIRTUAL_HOST_DRONE}:9000
       - DRONE_SECRET=ok
-#
-#  drone-agent-02:
-#    container_name: drone-agent-02
-#    hostname: drone-agent-02
-#    image: drone/agent:${DRONE_VERSION}
-#    privileged: true
-#    command: agent
-#    depends_on:
-#      - drone-server
-#    volumes:
-#      - /var/run/docker.sock:/var/run/docker.sock
-#    environment:
-##      - DRONE_SERVER=drone-server:9000
+
+  drone-agent-02:
+    container_name: drone-agent-02
+    hostname: drone-agent-02
+    image: drone/agent:${DRONE_VERSION}
+    privileged: true
+    command: agent
+    depends_on:
+      - drone-server
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - DRONE_SERVER=drone-server:9000
 #      - DRONE_SERVER=${DRONE_DOCKER_EXTERNAL_IP}:9000
-#      - DRONE_SECRET=ok
-#
-#  drone-agent-03:
-#    container_name: drone-agent-03
-#    hostname: drone-agent-03
-#    image: drone/agent:${DRONE_VERSION}
-#    privileged: true
-#    command: agent
-#    depends_on:
-#      - drone-server
-#    volumes:
-#      - /var/run/docker.sock:/var/run/docker.sock
-#    environment:
-##      - DRONE_SERVER=drone-server:9000
+      - DRONE_SECRET=ok
+
+  drone-agent-03:
+    container_name: drone-agent-03
+    hostname: drone-agent-03
+    image: drone/agent:${DRONE_VERSION}
+    privileged: true
+    command: agent
+    depends_on:
+      - drone-server
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - DRONE_SERVER=drone-server:9000
 #      - DRONE_SERVER=${DRONE_DOCKER_EXTERNAL_IP}:9000
-#      - DRONE_SECRET=ok
-#
-#  drone-agent-04:
-#    container_name: drone-agent-04
-#    hostname: drone-agent-04
-#    image: drone/agent:${DRONE_VERSION}
-#    privileged: true
-#    command: agent
-#    depends_on:
-#      - drone-server
-#    volumes:
-#      - /var/run/docker.sock:/var/run/docker.sock
-#    environment:
-##      - DRONE_SERVER=drone-server:9000
+      - DRONE_SECRET=ok
+
+  drone-agent-04:
+    container_name: drone-agent-04
+    hostname: drone-agent-04
+    image: drone/agent:${DRONE_VERSION}
+    privileged: true
+    command: agent
+    depends_on:
+      - drone-server
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - DRONE_SERVER=drone-server:9000
 #      - DRONE_SERVER=${DRONE_DOCKER_EXTERNAL_IP}:9000
-#      - DRONE_SECRET=ok
-#
+      - DRONE_SECRET=ok
+
 #  drone-agent-05:
 #    container_name: drone-agent-05
 #    hostname: drone-agent-05
@@ -158,8 +156,8 @@ services:
 #    volumes:
 #      - /var/run/docker.sock:/var/run/docker.sock
 #    environment:
-##      - DRONE_SERVER=drone-server:9000
-#      - DRONE_SERVER=${DRONE_DOCKER_EXTERNAL_IP}:9000
+#      - DRONE_SERVER=drone-server:9000
+##      - DRONE_SERVER=${DRONE_DOCKER_EXTERNAL_IP}:9000
 #      - DRONE_SECRET=ok
 #
 #  drone-agent-06:
@@ -173,8 +171,8 @@ services:
 #    volumes:
 #      - /var/run/docker.sock:/var/run/docker.sock
 #    environment:
-##      - DRONE_SERVER=drone-server:9000
-#      - DRONE_SERVER=${DRONE_DOCKER_EXTERNAL_IP}:9000
+#      - DRONE_SERVER=drone-server:9000
+##      - DRONE_SERVER=${DRONE_DOCKER_EXTERNAL_IP}:9000
 #      - DRONE_SECRET=ok
 #
 #  drone-agent-07:
@@ -188,8 +186,8 @@ services:
 #    volumes:
 #      - /var/run/docker.sock:/var/run/docker.sock
 #    environment:
-##      - DRONE_SERVER=drone-server:9000
-#      - DRONE_SERVER=${DRONE_DOCKER_EXTERNAL_IP}:9000
+#      - DRONE_SERVER=drone-server:9000
+##      - DRONE_SERVER=${DRONE_DOCKER_EXTERNAL_IP}:9000
 #      - DRONE_SECRET=ok
 #
 #  drone-agent-08:
@@ -203,10 +201,10 @@ services:
 #    volumes:
 #      - /var/run/docker.sock:/var/run/docker.sock
 #    environment:
-##      - DRONE_SERVER=drone-server:9000
-#      - DRONE_SERVER=${DRONE_DOCKER_EXTERNAL_IP}:9000
+#      - DRONE_SERVER=drone-server:9000
+##      - DRONE_SERVER=${DRONE_DOCKER_EXTERNAL_IP}:9000
 #      - DRONE_SECRET=ok
-#
+
   selenoid-server:
     container_name: selenoid-server
     hostname: selenoid-server
@@ -230,8 +228,6 @@ services:
     container_name: selenoid-ui
     hostname: selenoid-ui
     image: aerokube/selenoid-ui:${SELENOID_VER}
-#    privileged: true
-#    network_mode: bridge
     ports:
       - 8080  #port 8080 is used by FnProject
     depends_on:
