@@ -62,10 +62,9 @@ services:
     container_name: drone-server
     hostname: drone-server
     image: drone/drone:${DRONE_VERSION}
-    privileged: true
     ports:
       - 8000
-      - 9000
+#      - 9000
     volumes:
       - ./droneio/drone:/var/lib/drone/
       - /var/run/docker.sock:/var/run/docker.sock
@@ -83,9 +82,9 @@ services:
       - DRONE_SECRET=ok
       - DRONE_PLUGIN_PULL=true
       - DRONE_GOGS=true
-#      - DRONE_GOGS_URL=http://git-server.home:3300
+      - DRONE_GOGS_URL=http://git-server:3300
 #      - DRONE_GOGS_URL=http://${GIT_DOCKER_EXTERNAL_IP}:3300
-      - DRONE_GOGS_URL=http://git.rapidpm.org
+#      - DRONE_GOGS_URL=http://git.rapidpm.org
       - DRONE_GOGS_PRIVATE_MODE=true
       - DRONE_GOGS_SKIP_VERIFY=false
 #
