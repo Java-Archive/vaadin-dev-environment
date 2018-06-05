@@ -48,7 +48,7 @@ services:
     privileged: true
     ports:
       - 3000
-      - 1022
+      - 22
     volumes:
       - $PWD/gitea/data:/data
       - $PWD/gitea/app.ini:/data/gitea/conf/app.ini
