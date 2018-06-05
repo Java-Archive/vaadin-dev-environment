@@ -47,12 +47,14 @@ services:
     image: gitea/gitea:${GIT_VERSION}
     ports:
       - 3000
+      - 22
     volumes:
       - $PWD/gitea/data:/data
 #      - $PWD/gitea/app.ini:/data/gitea/conf/app.ini
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
       - VIRTUAL_HOST=git.rapidpm.org
+      - VIRTUAL_PORT=3000
     depends_on:
       - nginx-proxy
 
@@ -72,6 +74,7 @@ services:
       - nexus-server
     environment:
       - VIRTUAL_HOST=drone.rapidpm.org
+      - VIRTUAL_PORT=8000
       - DRONE_DEBUG=true
 #      - DRONE_HOST=http://drone-server.home:8000
 #      - DRONE_HOST=http://${DRONE_DOCKER_EXTERNAL_IP}:8000
@@ -299,7 +302,8 @@ services:
     container_name: fnserver
     hostname: fnserver
     ports:
-      - "8080"
+      - 8080
+      - 2375
     environment:
       - VIRTUAL_HOST=fn.rapidpm.org
     volumes:
