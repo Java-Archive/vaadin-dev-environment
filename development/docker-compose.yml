@@ -22,6 +22,8 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
       - VIRTUAL_HOST=portainer.rapidpm.org
+    depends_on:
+      - nginx-proxy
 
   nexus-server:
     container_name: nexus-server
@@ -36,6 +38,8 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
       - VIRTUAL_HOST=nexus.rapidpm.org
+    depends_on:
+      - nginx-proxy
 
   git-server:
     container_name: git-server
@@ -51,6 +55,8 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
       - VIRTUAL_HOST=git.rapidpm.org
+    depends_on:
+      - nginx-proxy
 
 #  drone-server:
 #    container_name: drone-server
