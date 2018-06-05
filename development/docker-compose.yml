@@ -45,10 +45,8 @@ services:
     container_name: git-server
     hostname: git-server
     image: gitea/gitea:${GIT_VERSION}
-#    privileged: true
     ports:
       - 3000
-#      - 22
     volumes:
       - $PWD/gitea/data:/data
       - $PWD/gitea/app.ini:/data/gitea/conf/app.ini
