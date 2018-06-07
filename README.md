@@ -16,7 +16,7 @@ Vaadin projects.
 First we will hav a bird eye view on this environment. The main process is the following.
 After you write some code on your machine, you want to test it.
 The active UNIT-tests are running in a locale browser until you are done with the first coding step.
-Now it is time to test this with all UNIT-Tests. But you don´´ want to wait so long, because the browser that is used 
+Now it is time to test this with all UNIT-Tests. But you don´t want to wait so long, because the browser that is used 
 by the tests are stealing permanently the focus of your mouse/keyboard and so on.
 
 Now you could push your changes to the git-server. This could be github, or the 
