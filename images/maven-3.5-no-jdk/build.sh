@@ -1,4 +1,4 @@
-!/bin/bash
+#!/bin/bash
 docker build -t svenruppert/maven-3.5-no-jdk .
 
 docker push svenruppert/maven-3.5-no-jdk:latest

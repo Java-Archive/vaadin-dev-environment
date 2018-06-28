@@ -14,6 +14,4 @@ ENV MAVEN_CONFIG "$USER_HOME_DIR/.m2"
 RUN java -version
 RUN mvn -version
 
-
-ENTRYPOINT ["/usr/local/bin/mvn-entrypoint.sh"]
 CMD ["mvn"]
