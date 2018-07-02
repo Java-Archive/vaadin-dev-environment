@@ -4,7 +4,7 @@ MAINTAINER sven.ruppert@gmail.com
 ARG USER_HOME_DIR="/root"
 
 RUN curl -sL https://github.com/shyiko/jabba/raw/master/install.sh | \
-    JABBA_COMMAND="install openjdk-shenandoah@1.10.0-244 -o /jdk" bash
+    JABBA_COMMAND="install openjdk-shenandoah@1.10.0-254 -o /jdk" bash
 
 ENV JAVA_HOME /jdk
 ENV PATH $JAVA_HOME/bin:$PATH
