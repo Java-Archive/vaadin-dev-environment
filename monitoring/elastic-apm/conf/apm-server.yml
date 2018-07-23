@@ -1,0 +1,9 @@
+apm-server:
+  host: localhost:8200
+
+output:
+  elasticsearch:
+    hosts: ElasticsearchAddress:9200
+
+setup.kibana:
+  host: "localhost:5601"

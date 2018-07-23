@@ -1,0 +1,12 @@
+version: '3.5'
+
+services:
+  elastic-apm:
+    image: docker.elastic.co/apm/apm-server:6.3.0
+    container_name: elastic-apm-server
+    ports:
+      - "9200:9200"
+      - "8200:8200"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - $PWD/conf/apm-server.yml:/usr/share/apm-server/apm-server.yml
