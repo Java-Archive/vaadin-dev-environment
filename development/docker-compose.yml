@@ -230,19 +230,35 @@ services:
     image: aerokube/selenoid-ui:${SELENOID_VER}
     ports:
       - 8080  #port 8080 is used by FnProject
-    depends_on:
-      - selenoid-server
     links:
       - selenoid-server
     environment:
       - VIRTUAL_HOST=${VIRTUAL_HOST_SELENOID_UI}
     depends_on:
+      - selenoid-server
       - nginx-proxy
     command: [--selenoid-uri, "http://selenoid-server:4444"]
 
 
+  openproject:
+    image: openproject/community
+    container_name: openproject
+    hostname: openproject
+    ports:
+      - 80
+    volumes:
+      - $PWD/openproject/pgdata:/var/lib/postgresql/9.6/main
+      - $PWD/openproject/static:/var/db/openproject
+      - $PWD/openproject/logs:/var/log/supervisor
+    environment:
+      - VIRTUAL_HOST=${VIRTUAL_HOST_OPENPROJECT}
+      - SECRET_KEY_BASE=secret
+    depends_on:
+    - nginx-proxy
+
+
   youtrack:
-      image: jetbrains/youtrack:2018.2.42133
+      image: jetbrains/youtrack:${YOUTRACK_VERSION}
       container_name: youtrack
       hostname: youtrack
       ports:
@@ -258,7 +274,7 @@ services:
         - nginx-proxy
 
   upsource:
-      image: jetbrains/upsource:2018.1.357
+      image: jetbrains/upsource:${UPSOURCE_VERSION}
       container_name: upsource
       hostname: upsource
       ports:
@@ -281,8 +297,8 @@ services:
       - 9000
     environment:
       - VIRTUAL_HOST=${VIRTUAL_HOST_S3}
-      - MINIO_ACCESS_KEY=minio
-      - MINIO_SECRET_KEY=miniopasswd
+      - MINIO_ACCESS_KEY=${MINIO_ACCESSKEY}
+      - MINIO_SECRET_KEY=${MINIO_SECRETKEY}
     volumes:
       - $PWD/minio/data/:/data
       - /var/run/docker.sock:/var/run/docker.sock
