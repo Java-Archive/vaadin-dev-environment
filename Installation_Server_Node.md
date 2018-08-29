@@ -50,16 +50,28 @@ Webmin should run on port **10000**.
 + cd vaadin
 + git clone https://github.com/vaadin-developer/vaadin-dev-environment.git
 
-+ add folder
-    mkdir vaadin-dev-environment/development/youtrack/backups
-    mkdir vaadin-dev-environment/development/youtrack/conf
-    mkdir vaadin-dev-environment/development/youtrack/data
-    mkdir vaadin-dev-environment/development/youtrack/logs
+### if you want to use developer version
++ cd vaadin-dev-environment/
++ git checkout develop
++ git branch
++ cd ..
 
-    mkdir vaadin-dev-environment/development/upsource/backups
-    mkdir vaadin-dev-environment/development/upsource/conf
-    mkdir vaadin-dev-environment/development/upsource/data
-    mkdir vaadin-dev-environment/development/upsource/logs
+## back to regular install
++ add folder
+    mkdir vaadin-dev-environment/development/minio/data ; 
+    mkdir vaadin-dev-environment/development/nexus/data ; 
+    mkdir vaadin-dev-environment/development/portainer/data ;
+    mkdir vaadin-dev-environment/development/youtrack/backups ;
+    mkdir vaadin-dev-environment/development/youtrack/conf ;
+    mkdir vaadin-dev-environment/development/youtrack/data ;
+    mkdir vaadin-dev-environment/development/youtrack/logs ;
+    mkdir vaadin-dev-environment/development/upsource/backups ;
+    mkdir vaadin-dev-environment/development/upsource/conf ;
+    mkdir vaadin-dev-environment/development/upsource/data ;
+    mkdir vaadin-dev-environment/development/upsource/logs ;
+    mkdir vaadin-dev-environment/development/openproject/logs ;
+    mkdir vaadin-dev-environment/development/openproject/pgdata ;
+    mkdir vaadin-dev-environment/development/openproject/static ;
 
 + chgrp -R docker /opt/vaadin/vaadin-dev-environment/
 + chmod -R u+rwX,go+rwX,go+rwX /opt/vaadin/

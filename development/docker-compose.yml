@@ -289,6 +289,30 @@ services:
       depends_on:
         - nginx-proxy
 
+  gitlab:
+      image: gitlab/gitlab-ce:latest
+      #restart: always
+      container_name: gitlab
+      hostname: gitlab
+      environment:
+      - VIRTUAL_HOST=${VIRTUAL_HOST_GITLAB}
+        GITLAB_OMNIBUS_CONFIG: |
+          external_url '${VIRTUAL_HOST_GITLAB}'
+          # Add any other gitlab.rb configuration here, each on its own line
+      ports:
+        - 80:80
+        - 443:443
+        - 22:22
+      volumes:
+        - $PWD/gitlab/config:/etc/gitlab
+        - $PWD/gitlab/logs:/var/log/gitlab
+        - $PWD/gitlab/data:/var/opt/gitlab
+
+
+
+
+
+
   minio:
     image: minio/minio
     container_name: minio
