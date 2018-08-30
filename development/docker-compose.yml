@@ -360,3 +360,30 @@ services:
       - VIRTUAL_HOST=${VIRTUAL_HOST_FN_UI}
       - FN_API_URL=http://fnserver:8080
 
+  nextcloud-db:
+    image: mariadb
+    hostname: nextcloud-db
+    container_name: nextcloud-db
+    restart: always
+    volumes:
+      - $PWD/nextcloud/mysql:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=
+      - MYSQL_PASSWORD=
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+
+  nextcloud-app:
+    image: nextcloud
+    hostname: nextcloud-app
+    container_name: nextcloud-app
+    restart: always
+    ports:
+      - 80
+    environment:
+      - VIRTUAL_HOST=${VIRTUAL_HOST_NEXTCLOUD}
+    depends_on:
+      - nginx-proxy
+      - nextcloud-db
+    volumes:
+      - $PWD/nextcloud/data:/var/www/html
