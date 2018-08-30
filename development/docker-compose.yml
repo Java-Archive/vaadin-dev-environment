@@ -339,8 +339,8 @@ services:
           # Add any other gitlab.rb configuration here, each on its own line
       ports:
         - 80
-        - 443
-        - 22
+          #        - 443
+        - '2222:22'
       volumes:
         - $PWD/gitlab/config:/etc/gitlab
         - $PWD/gitlab/logs:/var/log/gitlab
