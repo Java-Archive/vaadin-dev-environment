@@ -99,9 +99,21 @@ selenoid configure \
 
 ### config the individual settings
 + nano .env
++ docker network create [name of the project in .env]_default
 + docker-compose create
 + docker-compose start
 
+## Register the gitlab Docker Runners
 
+docker run --rm -t -i -v $PWD/gitlab/config:/etc/gitlab-runner --name gitlab-runner-001 gitlab/gitlab-runner register \
+  --non-interactive \
+  --executor "docker" \
+  --docker-image alpine:3 \
+  --url "http://dev.hundt-consult.de/" \
+  --registration-token "hZarkURt8PMRZv7onJxh" \
+  --description "docker-runner" \
+  --tag-list "docker,locale" \
+  --run-untagged \
+  --locked="false"
 
 
