@@ -102,6 +102,10 @@ selenoid configure \
 + docker-compose create
 + docker-compose start
 
+### register the gitlab runners
 
+For each runner do:
 
+`docker exec -it gitlab-runner-01 gitlab-runner register -n -r hZarkURt8PMRZv7onJxh -u https://dev.hundt-consult.de/ --executor docker --docker-image docker:latest --docker-network-mode development_default --docker-volumes "/var/run/docker.sock:/var/run/docker.sock" --docker-privileged --name gitlab-runner-01`
 
+Change the token, here `hZarkURt8PMRZv7onJxh` to the value from your gitlab instance, adjust gitlab url and change number.

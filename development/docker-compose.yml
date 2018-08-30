@@ -346,6 +346,27 @@ services:
         - $PWD/gitlab/logs:/var/log/gitlab
         - $PWD/gitlab/data:/var/opt/gitlab
 
+  gitlab-runner-01:
+    image: gitlab/gitlab-runner:latest
+    container_name: gitlab-runner-01
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - $PWD/gitlab-runner/01/config:/etc/gitlab-runner
+
+  gitlab-runner-02:
+    image: gitlab/gitlab-runner:latest
+    container_name: gitlab-runner-02
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - $PWD/gitlab-runner/02/config:/etc/gitlab-runner
+
+  gitlab-runner-03:
+    image: gitlab/gitlab-runner:latest
+    container_name: gitlab-runner-03
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - $PWD/gitlab-runner/03/config:/etc/gitlab-runner
+
   minio:
     image: minio/minio
     container_name: minio
