@@ -4,11 +4,27 @@ services:
   nginx-proxy:
     image: jwilder/nginx-proxy
     container_name: nginx-proxy
+    labels:
+        com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy: "true"
     ports:
       - "80:80"
+      - "443:443"
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
-      - $PWD/nginx/conf/etc/nginx/conf.d/my_proxy.conf:/etc/nginx/conf.d/my_proxy.conf
+      - $PWD/nginx/conf/etc/nginx/conf.d:/etc/nginx/conf.d
+      - $PWD/nginx/certs:/etc/nginx/certs:ro
+      - $PWD/nginx/etc/nginx/vhost.d:/etc/nginx/vhost.d
+      - $PWD/nginx/usr/share/nginx/html:/usr/share/nginx/html
+  
+  letsencrypt-nginx-proxy-companion:
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    container_name: nginx-letsencrypt
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - $PWD/nginx/conf/etc/nginx/conf.d:/etc/nginx/conf.d
+      - $PWD/nginx/certs:/etc/nginx/certs
+      - $PWD/nginx/etc/nginx/vhost.d:/etc/nginx/vhost.d
+      - $PWD/nginx/usr/share/nginx/html:/usr/share/nginx/html
 
   portainer:
     container_name: portainer
@@ -21,6 +37,8 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
       - VIRTUAL_HOST=${VIRTUAL_HOST_PORTAINER}
+      - LETSENCRYPT_HOST=${VIRTUAL_HOST_PORTAINER}
+      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
     depends_on:
       - nginx-proxy
 
@@ -37,6 +55,8 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
       - VIRTUAL_HOST=${VIRTUAL_HOST_NEXUS}
+      - LETSENCRYPT_HOST=${VIRTUAL_HOST_NEXUS}
+      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
     depends_on:
       - nginx-proxy
 
@@ -55,6 +75,9 @@ services:
     environment:
       - VIRTUAL_HOST=${VIRTUAL_HOST_GIT}
       - VIRTUAL_PORT=3000
+      - LETSENCRYPT_HOST=${VIRTUAL_HOST_GIT}
+      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
+
     depends_on:
       - nginx-proxy
 
@@ -74,6 +97,8 @@ services:
       - nexus-server
     environment:
       - VIRTUAL_HOST=${VIRTUAL_HOST_DRONE}
+      - LETSENCRYPT_HOST=${VIRTUAL_HOST_DRONE}
+      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
       - VIRTUAL_PORT=8000
       - DRONE_DEBUG=true
       - DRONE_HOST=http://${VIRTUAL_HOST_DRONE}
@@ -217,6 +242,8 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
       - VIRTUAL_HOST=${VIRTUAL_HOST_SELENOID}
+      - LETSENCRYPT_HOST=${VIRTUAL_HOST_SELENOID}
+      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
     depends_on:
       - nginx-proxy
     command: [--conf,             "/etc/selenoid/browsers.json",
@@ -234,6 +261,8 @@ services:
       - selenoid-server
     environment:
       - VIRTUAL_HOST=${VIRTUAL_HOST_SELENOID_UI}
+      - LETSENCRYPT_HOST=${VIRTUAL_HOST_SELENOID_UI}
+      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
     depends_on:
       - selenoid-server
       - nginx-proxy
@@ -252,6 +281,8 @@ services:
       - $PWD/openproject/logs:/var/log/supervisor
     environment:
       - VIRTUAL_HOST=${VIRTUAL_HOST_OPENPROJECT}
+      - LETSENCRYPT_HOST=${VIRTUAL_HOST_OPENPROJECT}
+      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
       - SECRET_KEY_BASE=secret
     depends_on:
     - nginx-proxy
@@ -270,6 +301,8 @@ services:
           - $PWD/youtrack/backups:/opt/youtrack/backups
       environment:
         - VIRTUAL_HOST=${VIRTUAL_HOST_ISSUES}
+        - LETSENCRYPT_HOST=${VIRTUAL_HOST_ISSUES}
+        - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
       depends_on:
         - nginx-proxy
 
@@ -286,6 +319,8 @@ services:
           - $PWD/upsource/backups:/opt/upsource/backups
       environment:
         - VIRTUAL_HOST=${VIRTUAL_HOST_REVIEW}
+        - LETSENCRYPT_HOST=${VIRTUAL_HOST_REVIEW}
+        - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
       depends_on:
         - nginx-proxy
 
@@ -295,19 +330,42 @@ services:
       container_name: gitlab
       hostname: gitlab
       environment:
-      - VIRTUAL_HOST=${VIRTUAL_HOST_GITLAB}
-      - GITLAB_OMNIBUS_CONFIG=${GITLAB_OMI_CONFIG}
-#      GITLAB_OMNIBUS_CONFIG: |
-#          external_url '${VIRTUAL_HOST_GITLAB}'
+        - VIRTUAL_HOST=${VIRTUAL_HOST_GITLAB}
+        - LETSENCRYPT_HOST=${VIRTUAL_HOST_GITLAB}
+        - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
+        - GITLAB_OMNIBUS_CONFIG=${GITLAB_OMI_CONFIG}
+             #        GITLAB_OMNIBUS_CONFIG: |
+             #external_url 'http://${VIRTUAL_HOST_GITLAB}'
           # Add any other gitlab.rb configuration here, each on its own line
       ports:
-        - 80:80
-        - 443:443
-        - 22:22
+        - 80
+          #        - 443
+        - '2222:22'
       volumes:
         - $PWD/gitlab/config:/etc/gitlab
         - $PWD/gitlab/logs:/var/log/gitlab
         - $PWD/gitlab/data:/var/opt/gitlab
+
+  gitlab-runner-01:
+    image: gitlab/gitlab-runner:latest
+    container_name: gitlab-runner-01
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - $PWD/gitlab-runner/01/config:/etc/gitlab-runner
+
+  gitlab-runner-02:
+    image: gitlab/gitlab-runner:latest
+    container_name: gitlab-runner-02
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - $PWD/gitlab-runner/02/config:/etc/gitlab-runner
+
+  gitlab-runner-03:
+    image: gitlab/gitlab-runner:latest
+    container_name: gitlab-runner-03
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - $PWD/gitlab-runner/03/config:/etc/gitlab-runner
 
   minio:
     image: minio/minio
@@ -317,6 +375,8 @@ services:
       - 9000
     environment:
       - VIRTUAL_HOST=${VIRTUAL_HOST_S3}
+      - LETSENCRYPT_HOST=${VIRTUAL_HOST_S3}
+      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
       - MINIO_ACCESS_KEY=${MINIO_ACCESSKEY}
       - MINIO_SECRET_KEY=${MINIO_SECRETKEY}
     volumes:
@@ -336,6 +396,8 @@ services:
       - 2375
     environment:
       - VIRTUAL_HOST=${VIRTUAL_HOST_FN}
+      - LETSENCRYPT_HOST=${VIRTUAL_HOST_FN}
+      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
       - VIRTUAL_PORT=8080
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
@@ -358,6 +420,8 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
       - VIRTUAL_HOST=${VIRTUAL_HOST_FN_UI}
+      - LETSENCRYPT_HOST=${VIRTUAL_HOST_FN_UI}
+      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
       - FN_API_URL=http://fnserver:8080
 
   nextcloud-db:
