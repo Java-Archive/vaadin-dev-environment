@@ -301,9 +301,9 @@ services:
 #          external_url '${VIRTUAL_HOST_GITLAB}'
           # Add any other gitlab.rb configuration here, each on its own line
       ports:
-        - 80:80
-        - 443:443
-        - 22:22
+        - 80
+        - 443
+        - 22
       volumes:
         - $PWD/gitlab/config:/etc/gitlab
         - $PWD/gitlab/logs:/var/log/gitlab
