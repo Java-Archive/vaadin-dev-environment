@@ -105,6 +105,7 @@ selenoid configure \
 
 ## Register the gitlab Docker Runners
 
+For each runner do:
 docker run --rm -t -i -v $PWD/gitlab/config:/etc/gitlab-runner --name gitlab-runner-001 gitlab/gitlab-runner register \
   --non-interactive \
   --executor "docker" \
@@ -116,4 +117,6 @@ docker run --rm -t -i -v $PWD/gitlab/config:/etc/gitlab-runner --name gitlab-run
   --run-untagged \
   --locked="false"
 
+`docker exec -it gitlab-runner-01 gitlab-runner register -n -r hZarkURt8PMRZv7onJxh -u https://dev.hundt-consult.de/ --executor docker --docker-image docker:latest --docker-network-mode development_default --docker-volumes "/var/run/docker.sock:/var/run/docker.sock" --docker-privileged --name gitlab-runner-01`
 
+Change the token, here `hZarkURt8PMRZv7onJxh` to the value from your gitlab instance, adjust gitlab url and change number.
