@@ -4,7 +4,6 @@ vaadin-dev-environment.iml
 
 gitea/data
 development/droneio/drone
-development/gitlab/
 
 development/nginx/certs
 development/nginx/etc
